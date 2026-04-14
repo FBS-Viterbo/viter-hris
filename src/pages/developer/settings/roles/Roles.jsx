@@ -4,6 +4,7 @@ import RolesList from "./RolesList";
 import { StoreContext } from "../../../../store/StoreContext";
 import { setIsAdd } from "../../../../store/StoreAction";
 import { FaPlus } from "react-icons/fa";
+import ModalAddRoles from "./ModalAddRoles";
 
 const Roles = () => {
   const { store, dispatch } = React.useContext(StoreContext);
@@ -23,6 +24,7 @@ const Roles = () => {
             <button
               type="button"
               className="flex items-center gap-1 hover:underline"
+              onClick={handleAdd}
             >
               <FaPlus className="text-primary" />
               Add
@@ -36,7 +38,7 @@ const Roles = () => {
         </div>
       </Layout>
 
-      {store.isAdd && <> </>}
+      {store.isAdd && <ModalAddRoles itemEdit={itemEdit} />}
     </>
   );
 };
