@@ -84,7 +84,9 @@ const ModalAddRoles = ({ itemEdit }) => {
           <Formik
             initialValues={initVal}
             validationSchema={yupSchema}
-            onSubmit={async () => {}}
+            onSubmit={async (values, { setSubmitting, resetForm }) => {
+              mutation.mutate(values);
+            }}
           >
             {(props) => {
               return (
@@ -122,7 +124,14 @@ const ModalAddRoles = ({ itemEdit }) => {
                           "Add"
                         )}
                       </button>
-                      <button type="reset"></button>
+                      <button
+                        type="reset"
+                        className="btn-modal-cancel"
+                        onClick={handleClose}
+                        disabled={mutation.isPending}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 </Form>
