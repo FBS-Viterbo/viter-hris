@@ -179,7 +179,7 @@
   }
 
   .wrapper {
-    @apply relative min-h-[100dvh] pt-[58px] ml-10 pr-6 pl-4 transition-all duration-150;
+    @apply relative min-h-[100dvh] print:pt-0 pt-20 ml-56 pr-6 pl-4 transition-all duration-150;
   }
 
   /* HEADER */

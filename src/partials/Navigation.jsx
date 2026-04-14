@@ -46,7 +46,7 @@ const Navigation = ({ navigationList = [], menu = "", submenu = "" }) => {
                 return (
                   <li
                     key={key}
-                    className={`h-fit flex items-center gap-2 ${item.subNavList && "flex-col"}`}
+                    className={`h-fit flex items-center gap-2 ${item.subNavList && "flex-col gap-0.5!"}`}
                   >
                     {item.subNavList ? (
                       <NavigationAccordions

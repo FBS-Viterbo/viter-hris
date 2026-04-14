@@ -19,11 +19,14 @@ const NavigationAccordions = ({ subNavList = [], item }) => {
       </button>
 
       {isOpen && (
-        <ul className="self-start pl-10">
+        <ul className="self-start w-full">
           {subNavList.map((item, key) => {
             return (
-              <li key={key}>
-                <Link to={item.path} className="hover:bg-gray-50/10">
+              <li key={key} className="w-full">
+                <Link
+                  to={item.path}
+                  className="block pl-10 w-full hover:bg-gray-50/10"
+                >
                   {item.label}
                 </Link>
               </li>
