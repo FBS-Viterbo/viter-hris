@@ -6,4 +6,3 @@ export const urlDeveloper = "developer";
 
 // dev API KEY
 export const devKey = "123devkey";
-
