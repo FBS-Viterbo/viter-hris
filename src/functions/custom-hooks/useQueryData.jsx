@@ -8,7 +8,7 @@ const useQueryData = (
   key = "",
   fd = {},
   id = null,
-  refetchOnWindowFocus = false
+  refetchOnWindowFocus = false,
 ) => {
   return useQuery({
     queryKey: [key, id],

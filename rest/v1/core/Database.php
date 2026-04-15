@@ -8,7 +8,7 @@ class Database
     {
         // Localhost
         $host = "localhost";
-        $dbname = "hris_v1";
+        $dbname = "viter_hris_v1";
         $username = "root";
         $password = "";
 
