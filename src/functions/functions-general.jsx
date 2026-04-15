@@ -3,6 +3,8 @@ export const devApiUrl = urlPath + "/rest";
 export const devNavUrl = "";
 export const apiVersion = "/v1";
 
+export const setTimezone = "Asia/Manila";
+
 // ROLES VARIABLE
 export const urlDeveloper = "developer";
 
@@ -17,4 +19,27 @@ export const isEmptyItem = (item, x = "") => {
     result = item;
   }
   return result;
+};
+
+export const formatDate = (dateVal, val = "", format = "") => {
+  const formatedDate = val;
+  if (typeof dateVal !== "undefined" && dateVal !== "") {
+    // formatting date
+    const event = new Date(dateVal);
+
+    return event.toLocaleString("en", dateOptions(format));
+  }
+  return formatedDate;
+};
+
+export const dateOptions = (format = "") => {
+  const options = { month: "long", day: "numeric", year: "numeric" };
+  if (format == "short-date") {
+    return {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+  }
+  return options;
 };

@@ -22,3 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     sendResponse($result);
     exit;
 }
+
+// UPDATE / PUT
+if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
+    $result = require 'update.php';
+    sendResponse($result);
+    exit;
+}

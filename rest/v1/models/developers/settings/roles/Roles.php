@@ -66,4 +66,26 @@ class Roles
         return $query;
     }
 
+    public function update()
+    {
+        try {
+            $sql = "update {$this->tblSettingsRoles} set ";
+            $sql .= "role_name = :role_name, ";
+            $sql .= "role_description = :role_description, ";
+            $sql .= "role_updated = :role_updated ";
+            $sql .= "where role_aid = :role_aid ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "role_name" => $this->role_name,
+                "role_description" => $this->role_description,
+                "role_updated" => $this->role_updated,
+                "role_aid" => $this->role_aid
+            ]);
+        } catch (PDOException $e) {
+            returnError($e);
+            $query = false;
+        }
+        return $query;
+    }
+
 }
