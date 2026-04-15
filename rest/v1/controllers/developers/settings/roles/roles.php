@@ -13,17 +13,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     sendResponse($result);
     exit;
 }
-
-// return error
-function returnError($msg)
-{
-    $response = new Response();
-    $error = [];
-    $response->setSuccess(false);
-    $error["count"] = 0;
-    $error["success"] = false;
-    $error['error'] = $msg;
-    $response->setData($error);
-    $response->send();
-    exit;
-}
