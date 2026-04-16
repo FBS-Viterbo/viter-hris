@@ -62,6 +62,10 @@ const ModalAddRoles = ({ itemEdit }) => {
     dispatch(setIsAdd(false));
   };
 
+  React.useEffect(() => {
+    dispatch(setError(false));
+  }, []);
+
   return (
     <>
       <ModalWrapperSide
@@ -69,7 +73,7 @@ const ModalAddRoles = ({ itemEdit }) => {
         className="transition-all ease-in-out transform duration-200"
       >
         {/* header */}
-        <div className="moda-header relative mb-4">
+        <div className="modal-header relative mb-4">
           <h3 className="text-dark text-sm">
             {itemEdit ? "Update" : "Add"} Role
           </h3>
@@ -87,6 +91,7 @@ const ModalAddRoles = ({ itemEdit }) => {
             initialValues={initVal}
             validationSchema={yupSchema}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
+              dispatch(setError(false));
               mutation.mutate(values);
             }}
           >
