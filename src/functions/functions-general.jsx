@@ -57,3 +57,11 @@ export const handleEscape = (handleClose) => {
     return () => window.removeEventListener("keydown", handleEscape);
   });
 };
+
+// get focus on a button
+export const GetFocus = (id) => {
+  React.useEffect(() => {
+    const obj = document.getElementById(id);
+    obj.focus();
+  }, []);
+};

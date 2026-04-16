@@ -18,6 +18,7 @@ import {
   InputText,
   InputTextArea,
 } from "../../../../components/form-input/FormInputs";
+import MessageError from "../../../../partials/MessageError";
 
 const ModalAddRoles = ({ itemEdit }) => {
   const { store, dispatch } = React.useContext(StoreContext);
@@ -38,7 +39,7 @@ const ModalAddRoles = ({ itemEdit }) => {
 
       if (data.success) {
         dispatch(setSuccess(true));
-        dispatch(setMessage(Successfully`${itemEdit ? "updated" : "added"}`));
+        dispatch(setMessage(`Successfully ${itemEdit ? "updated" : "added"}`));
         dispatch(setIsAdd(false));
       }
       if (data.success == false) {
@@ -52,6 +53,7 @@ const ModalAddRoles = ({ itemEdit }) => {
     ...itemEdit,
     role_name: itemEdit ? itemEdit.role_name : "",
     role_description: itemEdit ? itemEdit.role_description : "",
+    role_name_old: itemEdit ? itemEdit.role_name : "",
   };
   const yupSchema = Yup.object({
     role_name: Yup.string().trim().required("required"),
@@ -108,6 +110,8 @@ const ModalAddRoles = ({ itemEdit }) => {
                           type="text"
                           disabled={mutation.isPending}
                         />
+
+                        {store.error && <MessageError />}
                       </div>
                     </div>
                     <div className="modal-action">

@@ -29,3 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     sendResponse($result);
     exit;
 }
+
+// DELETE / PUT
+if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+    $result = require 'delete.php';
+    sendResponse($result);
+    exit;
+}

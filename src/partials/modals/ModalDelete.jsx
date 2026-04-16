@@ -1,9 +1,3 @@
-import { queryData } from "@/components/custom-hooks/queryData";
-import {
-  handleEscape,
-  isEmptyItem,
-} from "@/components/helpers/functions-general";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { FaQuestion } from "react-icons/fa";
 import MessageError from "../MessageError";
@@ -16,6 +10,9 @@ import {
   setMessage,
   setSuccess,
 } from "../../store/StoreAction";
+import { queryData } from "../../functions/custom-hooks/queryData";
+import { handleEscape, isEmptyItem } from "../../functions/functions-general";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const ModalDelete = ({
   mysqlApiDelete,
