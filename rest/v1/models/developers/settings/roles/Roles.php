@@ -88,4 +88,24 @@ class Roles
         return $query;
     }
 
+    public function active()
+    {
+        try {
+            $sql = "update {$this->tblSettingsRoles} set ";
+            $sql .= "role_is_active = :role_is_active, ";
+            $sql .= "role_updated = :role_updated ";
+            $sql .= "where role_aid = :role_aid ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "role_is_active" => $this->role_is_active,
+                "role_updated" => $this->role_updated,
+                "role_aid" => $this->role_aid
+            ]);
+        } catch (PDOException $e) {
+            returnError($e);//use for debugging // use it if error is invalid request error
+            $query = false;
+        }
+        return $query;
+    }
+
 }

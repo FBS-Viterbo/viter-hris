@@ -1,7 +1,7 @@
 import React from "react";
-import { setError, setSuccess } from "@/store/StoreAction";
-import { StoreContext } from "@/store/StoreContext";
 import { GetFocus } from "@/components/helpers/functions-general";
+import { setError, setSuccess } from "../../store/StoreAction";
+import { StoreContext } from "../../store/StoreContext";
 
 const ModalError = ({ msg = false }) => {
   const { store, dispatch } = React.useContext(StoreContext);

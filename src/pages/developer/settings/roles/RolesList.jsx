@@ -7,11 +7,13 @@ import {
 import NoData from "../../../../partials/NoData";
 import FetchingSpinner from "../../../../partials/spinners/FetchingSpinner";
 import TableLoading from "../../../../partials/TableLoading";
-import { FaEdit } from "react-icons/fa";
+import { FaArchive, FaEdit } from "react-icons/fa";
 import { StoreContext } from "../../../../store/StoreContext";
-import { setIsAdd } from "../../../../store/StoreAction";
+import { setIsAdd, setIsArchive } from "../../../../store/StoreAction";
+import Status from "../../../../partials/Status";
+import ModalArchive from "../../../../partials/modals/ModalArchive";
 
-const RolesList = ({ setItemEdit }) => {
+const RolesList = ({ itemEdit, setItemEdit }) => {
   const { store, dispatch } = React.useContext(StoreContext);
 
   const {
@@ -29,6 +31,11 @@ const RolesList = ({ setItemEdit }) => {
     setItemEdit(item);
   };
 
+  const handleArchive = (item) => {
+    dispatch(setIsArchive(true));
+    setItemEdit(item);
+  };
+
   return (
     <>
       <div className="relative pt-4 rounded-md">
@@ -37,6 +44,7 @@ const RolesList = ({ setItemEdit }) => {
           <thead>
             <tr>
               <th>#</th>
+              <th>Status</th>
               <th>Role</th>
               <th>Description</th>
               <th>Created</th>
@@ -62,6 +70,11 @@ const RolesList = ({ setItemEdit }) => {
                 return (
                   <tr key={key}>
                     <td>{key + 1}.</td>
+                    <td>
+                      <Status
+                        text={`${item.role_is_active == 1 ? "active" : "inactive"}`}
+                      />
+                    </td>
                     <td>{item.role_name}</td>
                     <td>{item.role_description}</td>
                     <td>{formatDate(item.role_created, "--", "short-date")}</td>
@@ -78,6 +91,14 @@ const RolesList = ({ setItemEdit }) => {
                             >
                               <FaEdit />
                             </button>
+                            <button
+                              type="button"
+                              className="tooltip-action-table"
+                              data-tooltip="Archive"
+                              onClick={() => handleArchive(item)}
+                            >
+                              <FaArchive />
+                            </button>
                           </>
                         ) : (
                           <></>
@@ -91,6 +112,16 @@ const RolesList = ({ setItemEdit }) => {
           </tbody>
         </table>
       </div>
+      {store.isArchive && (
+        <ModalArchive
+          mysqlApiArchive={`${apiVersion}/controllers/developers/settings/roles/active.php?id=${itemEdit.role_aid}`}
+          dataItem={itemEdit}
+          msg="Are you sure you want to archive this record?"
+          successMsg={"Successfully archived"}
+          item={itemEdit.role_name}
+          queryKey="roles"
+        />
+      )}
     </>
   );
 };

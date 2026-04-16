@@ -1,5 +1,5 @@
-import { handleEscape } from "@/components/helpers/functions-general";
 import React from "react";
+import { handleEscape } from "../../functions/functions-general";
 
 const ModalWrapperCenter = ({
   children,

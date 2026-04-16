@@ -3,19 +3,19 @@ import {
   handleEscape,
   isEmptyItem,
 } from "@/components/helpers/functions-general";
-import {
-  setError,
-  setIsDelete,
-  setMessage,
-  setSuccess,
-} from "@/store/StoreAction";
-import { StoreContext } from "@/store/StoreContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { FaQuestion } from "react-icons/fa";
 import MessageError from "../MessageError";
 import ButtonSpinner from "../spinners/ButtonSpinner";
 import { useNavigate } from "react-router-dom";
+import { StoreContext } from "../../store/StoreContext";
+import {
+  setError,
+  setIsDelete,
+  setMessage,
+  setSuccess,
+} from "../../store/StoreAction";
 
 const ModalDelete = ({
   mysqlApiDelete,

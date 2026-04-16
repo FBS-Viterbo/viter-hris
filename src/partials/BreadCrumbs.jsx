@@ -48,8 +48,8 @@ const BreadCrumbs = ({ param = "" }) => {
                 crumb === "ue"
                   ? ""
                   : crumb === "employees" || crumb === "my-info"
-                  ? `${link}${currentLink}`
-                  : `${link}${currentLink}${param}`
+                    ? `${link}${currentLink}`
+                    : `${link}${currentLink}${param}`
               }
               className="mr-2 font-medium hover:text-primary capitalize"
             >
@@ -64,7 +64,7 @@ const BreadCrumbs = ({ param = "" }) => {
         )
       );
     });
-    
+
   return (
     <>
       <div className="mt-1 mb-1 flex items-center gap-5 breadcrumbs ml-8">
