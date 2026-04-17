@@ -18,7 +18,7 @@ export const navList = [
     submenu: "",
   },
   {
-    label: "Settings",
+    label: "SETTINGS",
     icon: <FaCogs />,
     menu: "settings",
     submenu: "",

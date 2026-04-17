@@ -20,6 +20,7 @@ import {
 import ModalArchive from "../../../partials/modals/ModalArchive";
 import ModalRestore from "../../../partials/modals/ModalRestore";
 import ModalDelete from "../../../partials/modals/ModalDelete";
+import SearchBar from "../../../partials/SearchBar";
 
 const EmployeesList = ({ itemEdit, setItemEdit }) => {
   const { store, dispatch } = React.useContext(StoreContext);
@@ -91,8 +92,32 @@ const EmployeesList = ({ itemEdit, setItemEdit }) => {
     setItemEdit(item);
   };
 
+  const handleFilterChange = (e) => {
+    setPage(1);
+    setFilterData(e.target.value);
+  };
+
   return (
     <>
+      <div className="flex items-center justify-between">
+        <div className="relative">
+          <label htmlFor="">Status</label>
+          <select onChange={handleFilterChange} value={filterData}>
+            <option value="">All</option>
+            <option value="1">Active</option>
+            <option value="0">Inactive</option>
+          </select>
+        </div>
+        <SearchBar
+          search={search}
+          dispatch={dispatch}
+          store={store}
+          result={result?.pages}
+          isFetching={isFetching}
+          setOnSearch={setOnSearch}
+          onSearch={onSearch}
+        />
+      </div>
       <div className="relative pt-4 rounded-md">
         {status !== "pending" && isFetching && <FetchingSpinner />}
         <table>
@@ -102,6 +127,7 @@ const EmployeesList = ({ itemEdit, setItemEdit }) => {
               <th>Status</th>
               <th>Employee Name</th>
               <th>Email</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
