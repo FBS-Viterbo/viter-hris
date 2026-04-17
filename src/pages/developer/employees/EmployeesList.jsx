@@ -33,8 +33,8 @@ const EmployeesList = ({ itemEdit, setItemEdit }) => {
     queryKey: ["employees", search.current.value, store.isSearch, filterData],
     queryFn: async ({ pageParam = 1 }) =>
       await queryDataInfinite(
-        `${apiVersion}/donations/search`, // search endpoint
-        `${apiVersion}/donations/page/${pageParam}`, // list endpoint
+        ``, // search endpoint
+        `${apiVersion}/controllers/developers/employees/page.php?start=${pageParam}`, // list endpoint
         // store.isSearch || isFilter, // search boolean, // search boolean
         false,
         {

@@ -21,7 +21,14 @@ export const queryData = (endpoint, method = "get", fd = {}) => {
     };
   }
 
-  const data = fetch(url, options).then((res) => res.json());
+  const data = fetch(url, options)
+    .then((res) => res.json())
+    .then((result) => {
+      if (result.success === false) {
+        throw new Error(result.error?.error || "API Error");
+      }
+      return result;
+    });
 
   return data;
 };

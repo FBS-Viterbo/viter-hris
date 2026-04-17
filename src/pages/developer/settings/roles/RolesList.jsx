@@ -83,7 +83,7 @@ const RolesList = ({ itemEdit, setItemEdit }) => {
                 </td>
               </tr>
             ) : (
-              dataRoles?.data.map((item, key) => {
+              dataRoles?.data?.map((item, key) => {
                 return (
                   <tr key={key}>
                     <td>{key + 1}.</td>
