@@ -1,5 +1,17 @@
 <?php
 
+// CORS headers - must be first
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Credentials: true");
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header("Access-Control-Allow-Methods: PUT, POST, GET, OPTIONS, DELETE");
+
+// Handle preflight immediately
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 require '../../../../core/header.php';
 require '../../../../core/functions.php';
 require '../../../../models/developers/settings/roles/Roles.php';
