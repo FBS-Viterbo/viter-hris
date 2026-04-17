@@ -33,8 +33,8 @@ if (array_key_exists('start', $_GET)) {
     checkReadQuery(
         $query,
         $total_result,
-        $val->start,
-        $val->total
+        $val->total,
+        $val->start
     );
 }
 
