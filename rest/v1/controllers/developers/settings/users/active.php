@@ -16,7 +16,7 @@ require '../../../../core/header.php';
 // use needed functions
 require '../../../../core/functions.php';
 // use models
-require '../../../../models/developers/settings/roles/Roles.php';
+require '../../../../models/developers/settings/users/Users.php';
 // store models into variables
 
 $conn = null;
@@ -39,7 +39,7 @@ if (array_key_exists('id', $_GET)) {
 
     $query = checkActive($val);
     http_response_code(200);
-    returnSuccess($val, 'role active', $query);
+    returnSuccess($val, 'user active', $query);
 }
 
 // return 404 if endpoint is active

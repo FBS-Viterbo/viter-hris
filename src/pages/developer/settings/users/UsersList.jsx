@@ -36,6 +36,26 @@ const UsersList = ({ setItemEdit, itemEdit }) => {
   const { ref, inView } = useInView();
   let counter = 1;
 
+  const handleEdit = (item) => {
+    dispatch(setIsAdd(true));
+    setItemEdit(item);
+  };
+
+  const handleArchive = (item) => {
+    dispatch(setIsArchive(true));
+    setItemEdit(item);
+  };
+
+  const handleRestore = (item) => {
+    dispatch(setIsRestore(true));
+    setItemEdit(item);
+  };
+
+  const handleDelete = (item) => {
+    dispatch(setIsDelete(true));
+    setItemEdit(item);
+  };
+
   //use if with loadmore button and search bar
   const {
     data: result,
@@ -112,6 +132,7 @@ const UsersList = ({ setItemEdit, itemEdit }) => {
               <th>Role</th>
               <th>Created</th>
               <th>Updated</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -158,6 +179,49 @@ const UsersList = ({ setItemEdit, itemEdit }) => {
                       <td>{item.role_name}</td>
                       <td>{formatDate(item.users_created)}</td>
                       <td>{formatDate(item.users_updated)}</td>
+                      <td>
+                        <div className="flex items-center gap-3">
+                          {item.users_is_active == 1 ? (
+                            <>
+                              <button
+                                type="button"
+                                className="tooltip-action-table"
+                                data-tooltip="Edit"
+                                onClick={() => handleEdit(item)}
+                              >
+                                <FaEdit />
+                              </button>
+                              <button
+                                type="button"
+                                className="tooltip-action-table"
+                                data-tooltip="Archive"
+                                onClick={() => handleArchive(item)}
+                              >
+                                <FaArchive />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                className="tooltip-action-table"
+                                data-tooltip="Restore"
+                                onClick={() => handleRestore(item)}
+                              >
+                                <FaTrashRestore />
+                              </button>
+                              <button
+                                type="button"
+                                className="tooltip-action-table"
+                                data-tooltip="Delete"
+                                onClick={() => handleDelete(item)}
+                              >
+                                <FaTrash />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   );
                 })}
@@ -178,6 +242,39 @@ const UsersList = ({ setItemEdit, itemEdit }) => {
           />
         </div>
       </div>
+
+      {store.isArchive && (
+        <ModalArchive
+          mysqlApiArchive={`${apiVersion}/controllers/developers/settings/users/active.php?id=${itemEdit.users_aid}`}
+          dataItem={itemEdit}
+          msg="Are you sure you want to archive this record?"
+          successMsg={"Successfully archived"}
+          item={itemEdit.users_email}
+          queryKey="users"
+        />
+      )}
+
+      {store.isRestore && (
+        <ModalRestore
+          mysqlApiRestore={`${apiVersion}/controllers/developers/settings/users/active.php?id=${itemEdit.users_aid}`}
+          dataItem={itemEdit}
+          msg="Are you sure you want to restore this record?"
+          successMsg={"Successfully restore"}
+          item={itemEdit.users_email}
+          queryKey="users"
+        />
+      )}
+
+      {store.isDelete && (
+        <ModalDelete
+          mysqlApiDelete={`${apiVersion}/controllers/developers/settings/users/users.php?id=${itemEdit.users_aid}`}
+          dataItem={itemEdit}
+          msg="Are you sure you want to delete this record?"
+          successMsg={"Successfully deleted"}
+          item={itemEdit.users_email}
+          queryKey="users"
+        />
+      )}
     </>
   );
 };

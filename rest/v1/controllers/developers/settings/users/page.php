@@ -1,10 +1,22 @@
 <?php
+// CORS headers - must be first
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Credentials: true");
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header("Access-Control-Allow-Methods: PUT, POST, GET, OPTIONS, DELETE");
+
+// Handle preflight immediately
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 //set http header
-require '../../../../core/header.php';
+require __DIR__ . '/../../../../core/header.php';
 // use needed functions
-require '../../../../core/functions.php';
+require __DIR__ . '/../../../../core/functions.php';
 //use models
-require '../../../../models/developers/settings/users/Users.php';
+require __DIR__ . '/../../../../models/developers/settings/users/Users.php';
 // store models into variables 
 
 

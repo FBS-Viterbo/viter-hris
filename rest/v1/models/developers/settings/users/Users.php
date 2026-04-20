@@ -155,13 +155,17 @@ class Users
         try {
             $sql = " update {$this->tblSettingsUsers} set ";
             $sql .= " users_first_name = :users_first_name, ";
-            $sql .= " users_description = :users_description, ";
+            $sql .= " users_last_name = :users_last_name, ";
+            $sql .= " users_email = :users_email, ";
+            $sql .= " users_role_id = :users_role_id, ";
             $sql .= " users_updated = :users_updated ";
             $sql .= " where users_aid = :users_aid ";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "users_first_name" => $this->users_first_name,
-                "users_description" => $this->users_description,
+                "users_last_name" => $this->users_last_name,
+                "users_email" => $this->users_email,
+                "users_role_id" => $this->users_role_id,
                 "users_updated" => $this->users_updated,
                 "users_aid" => $this->users_aid,
             ]);
@@ -174,7 +178,7 @@ class Users
     public function active()
     {
         try {
-            $sql = " update {$this->tblSettingsRoles} set ";
+            $sql = " update {$this->tblSettingsUsers} set ";
             $sql .= " users_is_active = :users_is_active, ";
             $sql .= " users_updated = :users_updated ";
             $sql .= " where users_aid = :users_aid ";
@@ -193,7 +197,7 @@ class Users
     public function delete()
     {
         try {
-            $sql = " delete from {$this->tblSettingsRoles} ";
+            $sql = " delete from {$this->tblSettingsUsers} ";
             $sql .= " where users_aid = :users_aid ";
             $query = $this->connection->prepare($sql);
             $query->execute([
@@ -217,6 +221,23 @@ class Users
                 "users_first_name" => $this->users_first_name,
             ]);
         } catch (PROException $e) {
+            $query = false;
+        }
+        return $query;
+    }
+
+    public function checkEmail()
+    {
+        try {
+            $sql = "select ";
+            $sql .= " users_email ";
+            $sql .= " from {$this->tblSettingsUsers} ";
+            $sql .= " where users_email = :users_email ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "users_email" => $this->users_email,
+            ]);
+        } catch (PDOException $e) {
             $query = false;
         }
         return $query;
