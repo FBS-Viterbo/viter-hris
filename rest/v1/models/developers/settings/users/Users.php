@@ -73,6 +73,7 @@ class Users
             $query = $this->connection->query($sql);
 
         } catch (PDOException $e) {
+            returnError($e);
             $query = false;
         }
         return $query;
