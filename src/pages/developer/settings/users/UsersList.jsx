@@ -29,7 +29,7 @@ const UsersList = ({ itemEdit, setItemEdit }) => {
     data: dataRoles,
   } = useQueryData(
     `${apiVersion}/controllers/developers/settings/roles/roles.php`, //api path file
-    "get", //method reques(get,post,put,delete)
+    "get", //method request(get,post,put,delete)
     "roles", //query key
   );
 

@@ -15,20 +15,23 @@ import { FaTimes } from "react-icons/fa";
 import { Formik, Form } from "formik";
 import ButtonSpinner from "../../../../partials/spinners/ButtonSpinner";
 import {
+  InputSelect,
   InputText,
   InputTextArea,
 } from "../../../../components/form-input/FormInputs";
 import MessageError from "../../../../partials/MessageError";
 
-const ModalAddUsers = ({ itemEdit }) => {
+const ModalAddUsers = ({ itemEdit, filterArrayActiveRoles }) => {
   const { store, dispatch } = React.useContext(StoreContext);
+  console.log(filterArrayActiveRoles);
+
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (values) =>
       queryData(
         itemEdit
-          ? `${apiVersion}/controllers/developers/settings/roles/roles.php?id=${itemEdit.role_aid}` //update records
-          : `${apiVersion}/controllers/developers/settings/roles/roles.php`, //create records`
+          ? `${apiVersion}/controllers/developers/settings/users/users.php?id=${itemEdit.users_aid}` //update records
+          : `${apiVersion}/controllers/developers/settings/users/users.php`, //create records`
         itemEdit
           ? "put" //put if update a records and post if create new record
           : "post", // and post if create new record
@@ -51,12 +54,22 @@ const ModalAddUsers = ({ itemEdit }) => {
 
   const initVal = {
     ...itemEdit,
-    role_name: itemEdit ? itemEdit.role_name : "",
-    role_description: itemEdit ? itemEdit.role_description : "",
-    role_name_old: itemEdit ? itemEdit.role_name : "",
+    users_role_id: itemEdit ? itemEdit.users_role_id : "",
+    users_first_name: itemEdit ? itemEdit.users_first_name : "",
+    users_last_name: itemEdit ? itemEdit.users_last_name : "",
+    users_password: itemEdit ? itemEdit.users_password : "",
+    users_email: itemEdit ? itemEdit.users_email : "",
+
+    users_email_old: itemEdit ? itemEdit.users_email : "",
   };
   const yupSchema = Yup.object({
-    role_name: Yup.string().trim().required("required"),
+    users_role_id: Yup.string().trim().required("required"),
+    users_first_name: Yup.string().trim().required("required"),
+    users_last_name: Yup.string().trim().required("required"),
+    users_email: Yup.string()
+      .trim()
+      .email("Invalid email")
+      .required("required"),
   });
   const handleClose = () => {
     dispatch(setIsAdd(false));
@@ -75,7 +88,7 @@ const ModalAddUsers = ({ itemEdit }) => {
         {/* header */}
         <div className="modal-header relative mb-4">
           <h3 className="text-dark text-sm">
-            {itemEdit ? "Update" : "Add"} Role
+            {itemEdit ? "Update" : "Add"} Users
           </h3>
           <button
             type="button"
@@ -102,21 +115,52 @@ const ModalAddUsers = ({ itemEdit }) => {
                     <div className="modal-container">
                       <div className="relative mb-6">
                         <InputText
-                          label="Name"
-                          name="role_name"
+                          label="First Name"
+                          name="users_first_name"
                           type="text"
                           disabled={mutation.isPending}
                         />
                       </div>
+
                       <div className="relative mb-6">
-                        <InputTextArea
-                          label="Description"
-                          name="role_description"
+                        <InputText
+                          label="Last Name"
+                          name="users_last_name"
                           type="text"
                           disabled={mutation.isPending}
                         />
-
                         {store.error && <MessageError />}
+                      </div>
+
+                      <div className="relative mb-6">
+                        <InputText
+                          label="Email"
+                          name="users_email"
+                          type="text"
+                          disabled={mutation.isPending}
+                        />
+                      </div>
+
+                      <div className="relative mb-6">
+                        <InputSelect
+                          label="Role"
+                          name="users_role_id"
+                          type="text"
+                          disabled={mutation.isPending}
+                        >
+                          <optgroup label="Select a role">
+                            <option value="" hidden>
+                              --
+                            </option>
+                            {filterArrayActiveRoles.map((item, key) => {
+                              return (
+                                <option key={key} value={item.role_aid}>
+                                  {item.role_name}
+                                </option>
+                              );
+                            })}
+                          </optgroup>
+                        </InputSelect>
                       </div>
                     </div>
                     <div className="modal-action">
