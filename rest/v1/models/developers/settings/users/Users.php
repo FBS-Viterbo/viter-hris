@@ -242,4 +242,23 @@ class Users
         }
         return $query;
     }
+
+    public function checkNameCombination()
+    {
+        try {
+            $sql = "select ";
+            $sql .= " * ";
+            $sql .= " from {$this->tblSettingsUsers} ";
+            $sql .= " where users_first_name = :users_first_name ";
+            $sql .= " and users_last_name = :users_last_name ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "users_first_name" => $this->users_first_name,
+                "users_last_name" => $this->users_last_name,
+            ]);
+        } catch (PDOException $e) {
+            $query = false;
+        }
+        return $query;
+    }
 }

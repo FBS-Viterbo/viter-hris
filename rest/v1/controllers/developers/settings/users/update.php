@@ -29,6 +29,7 @@ if (array_key_exists("id", $_GET)) {
 
     // validations
     checkId($val->users_aid);
+    isNameCombinationExist($val);
     compareEmail(
         $val,//models
         $users_email_old,//old record

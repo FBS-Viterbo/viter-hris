@@ -414,6 +414,20 @@ function compareEmail($object, $email_old, $email)
     }
 }
 
+// check name combination (first name + last name)
+function isNameCombinationExist($object)
+{
+    $query = $object->checkNameCombination();
+    $count = $query->rowCount();
+    if ($count > 0) {
+        $row = $query->fetch(PDO::FETCH_ASSOC);
+        // For updates: reject only if it's a different user
+        // For creates: reject if any user exists with this combination
+        if (!isset($object->users_aid) || empty($object->users_aid) || $row['users_aid'] != $object->users_aid) {
+            checkExistence($count, $object->users_first_name . " " . $object->users_last_name . " already exist.");
+        }
+    }
+}
 
 // check association
 function isAssociated($object)

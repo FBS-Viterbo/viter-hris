@@ -38,17 +38,25 @@ const ModalAddUsers = ({ itemEdit, filterArrayActiveRoles }) => {
         values,
       ),
     onSuccess: (data) => {
+      console.log("🔵 ModalAddUsers - API Response:", data);
       queryClient.invalidateQueries({ queryKey: ["users"] });
 
       if (data.success) {
+        console.log("✅ Success - showing success message");
         dispatch(setSuccess(true));
         dispatch(setMessage(`Successfully ${itemEdit ? "updated" : "added"}`));
         dispatch(setIsAdd(false));
       }
       if (data.success == false) {
+        console.log("❌ Error - setting error state:", data.error);
         dispatch(setError(true));
         dispatch(setMessage(data.error));
       }
+    },
+    onError: (error) => {
+      console.log("🔴 Mutation ERROR:", error);
+      dispatch(setError(true));
+      dispatch(setMessage(error.message || "An error occurred"));
     },
   });
 
@@ -78,6 +86,10 @@ const ModalAddUsers = ({ itemEdit, filterArrayActiveRoles }) => {
   React.useEffect(() => {
     dispatch(setError(false));
   }, []);
+
+  React.useEffect(() => {
+    console.log("🔍 Store state updated - error:", store.error, "message:", store.message);
+  }, [store.error, store.message]);
 
   return (
     <>
@@ -129,7 +141,6 @@ const ModalAddUsers = ({ itemEdit, filterArrayActiveRoles }) => {
                           type="text"
                           disabled={mutation.isPending}
                         />
-                        {store.error && <MessageError />}
                       </div>
 
                       <div className="relative mb-6">
@@ -161,6 +172,7 @@ const ModalAddUsers = ({ itemEdit, filterArrayActiveRoles }) => {
                             })}
                           </optgroup>
                         </InputSelect>
+                        {store.error && <MessageError />}
                       </div>
                     </div>
                     <div className="modal-action">

@@ -15,7 +15,8 @@ $val->users_created = date("Y-m-d H:m:s");
 $val->users_updated = date("Y-m-d H:m:s");
 
 // validations
-isNameExist($val, $val->users_first_name);
+isNameCombinationExist($val);
+isEmailExist($val, $val->users_email);
 
 $query = checkCreate($val);
 http_response_code(200);
