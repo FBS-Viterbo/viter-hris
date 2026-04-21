@@ -172,8 +172,7 @@ const UsersList = ({ setItemEdit, itemEdit }) => {
                         />
                       </td>
                       <td>
-                        {item.users_first_name}
-                        {item.users_last_name}
+                        {item.users_first_name} {item.users_last_name}
                       </td>
                       <td>{item.users_email}</td>
                       <td>{item.role_name}</td>
