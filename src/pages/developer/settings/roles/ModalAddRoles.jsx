@@ -47,6 +47,11 @@ const ModalAddRoles = ({ itemEdit }) => {
         dispatch(setMessage(data.error));
       }
     },
+    onError: (error) => {
+      console.log("🔴 Mutation ERROR:", error);
+      dispatch(setError(true));
+      dispatch(setMessage(error.message || "An error occurred"));
+    },
   });
 
   const initVal = {
