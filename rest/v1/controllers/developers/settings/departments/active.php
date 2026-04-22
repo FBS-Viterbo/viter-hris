@@ -1,28 +1,22 @@
 <?php
-// CORS headers - must be first
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Credentials: true");
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header("Access-Control-Allow-Methods: PUT, POST, GET, OPTIONS, DELETE");
 
-// Handle preflight immediately
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// set http header
-require __DIR__ . '/../../../core/header.php';
-// use needed functions
-require __DIR__ . '/../../../core/functions.php';
-// use models
-require __DIR__ . '/../../../models/developers/employees/Employees.php';
-// store models into variables
+require '../../../../core/header.php';
+require '../../../../core/functions.php';
+require '../../../../models/developers/settings/departments/Departments.php';
 
 $conn = null;
 $conn = checkDBConnection();
-
-$val = new Employees($conn);
+$val = new Departments($conn);
 
 $body = file_get_contents("php://input");
 $data = json_decode($body, true);
@@ -32,15 +26,15 @@ if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
 
     if (array_key_exists('id', $_GET)) {
         checkPayload($data);
-        $val->employee_aid = $_GET['id'];
-        $val->employee_is_active = trim($data['isActive']);
-        $val->employee_updated = date('Y-m-d H:m:s');
+        $val->department_aid = $_GET['id'];
+        $val->department_is_active = trim($data['isActive']);
+        $val->department_updated = date('Y-m-d H:m:s');
 
-        checkId($val->employee_aid);
+        checkId($val->department_aid);
 
         $query = checkActive($val);
         http_response_code(200);
-        returnSuccess($val, 'employee active', $query);
+        returnSuccess($val, 'department active', $query);
     }
 
     checkEndpoint();

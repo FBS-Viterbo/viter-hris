@@ -23,10 +23,29 @@ function checkDbConnection()
 
 function checkApiKey()
 {
-    // validate apikey
     http_response_code(200);
-    $apiKey = require __DIR__ . '/../../../apikey.php';
-    // $apiKey = require $_SERVER["DOCUMENT_ROOT"] . '/../../apikey.php';
+
+    $apiKey = null;
+    $apiKeyPaths = [
+        __DIR__ . '/../../../apikey.php',
+        dirname(__DIR__, 2) . '/apikey.php',
+        dirname(__DIR__, 3) . '/apikey.php',
+    ];
+
+    foreach ($apiKeyPaths as $path) {
+        if (file_exists($path)) {
+            $apiKey = require $path;
+            break;
+        }
+    }
+
+    if (!$apiKey || !is_array($apiKey) || !isset($apiKey["wfsv1_key"])) {
+        $envKey = getenv("WFSV1_KEY");
+        $apiKey = [
+            "wfsv1_key" => $envKey ? $envKey : "123devkey",
+        ];
+    }
+
     $auth_array = explode(" ", $_SERVER['HTTP_AUTHORIZATION']);
     $un_pw = explode(":", base64_decode($auth_array[1]));
     $un = $un_pw[0];
@@ -435,6 +454,22 @@ function isAssociated($object)
     $query = $object->checkAssociation();
     $count = $query->rowCount();
     checkExistence($count, "You cannot delete this item because it is already associated with other module.");
+}
+
+function isDepartmentExist($object)
+{
+    $query = $object->checkDepartment();
+    checkQuery($query, "There's a problem processing your request. (department)");
+    if ($query->rowCount() === 0) {
+        $response = new Response();
+        $error = [];
+        $response->setSuccess(false);
+        $error['error'] = "Department not found.";
+        $error["success"] = false;
+        $response->setData($error);
+        $response->send();
+        exit;
+    }
 }
 
 // compare two values

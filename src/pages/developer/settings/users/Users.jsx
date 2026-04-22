@@ -34,7 +34,7 @@ const Users = () => {
 
   return (
     <>
-      <Layout menu="Settings" submenu="roles">
+      <Layout menu="Settings" submenu="users">
         {/* PAGE HEADER */}
         <div className="flex items-center justify-between w-full">
           <h1>Users</h1>

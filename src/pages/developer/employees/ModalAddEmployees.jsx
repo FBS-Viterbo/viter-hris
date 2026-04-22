@@ -14,10 +14,13 @@ import ModalWrapperSide from "../../../partials/modals/ModalWrapperSide";
 import { FaTimes } from "react-icons/fa";
 import { Formik, Form } from "formik";
 import ButtonSpinner from "../../../partials/spinners/ButtonSpinner";
-import { InputText } from "../../../components/form-input/FormInputs";
+import {
+  InputSelect,
+  InputText,
+} from "../../../components/form-input/FormInputs";
 import MessageError from "../../../partials/MessageError";
 
-const ModalAddEmployees = ({ itemEdit }) => {
+const ModalAddEmployees = ({ itemEdit, filterArrayActiveDepartments }) => {
   const { store, dispatch } = React.useContext(StoreContext);
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -50,6 +53,7 @@ const ModalAddEmployees = ({ itemEdit }) => {
     employee_middle_name: itemEdit ? itemEdit.employee_middle_name : "",
     employee_last_name: itemEdit ? itemEdit.employee_last_name : "",
     employee_email: itemEdit ? itemEdit.employee_email : "",
+    employee_department_id: itemEdit ? itemEdit.employee_department_id : "",
     employee_email_old: itemEdit ? itemEdit.employee_email : "",
   };
 
@@ -60,6 +64,7 @@ const ModalAddEmployees = ({ itemEdit }) => {
       .trim()
       .email("Invalid email")
       .required("required"),
+    employee_department_id: Yup.string().trim().required("required"),
   });
 
   const handleClose = () => {
@@ -135,6 +140,27 @@ const ModalAddEmployees = ({ itemEdit }) => {
                           type="email"
                           disabled={mutation.isPending}
                         />
+                      </div>
+                      <div className="relative mb-6">
+                        <InputSelect
+                          label="Department"
+                          name="employee_department_id"
+                          disabled={mutation.isPending}
+                        >
+                          <optgroup label="Select a department">
+                            <option value="" hidden>
+                              --
+                            </option>
+                            {filterArrayActiveDepartments.map((item) => (
+                              <option
+                                key={item.department_aid}
+                                value={item.department_aid}
+                              >
+                                {item.department_name}
+                              </option>
+                            ))}
+                          </optgroup>
+                        </InputSelect>
 
                         {store.error && <MessageError />}
                       </div>
