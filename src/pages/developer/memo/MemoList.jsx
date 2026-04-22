@@ -102,7 +102,7 @@ const MemoList = ({ itemEdit, setItemEdit, setItemView }) => {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mt-2">
         <div className="relative">
           <label htmlFor="">Status</label>
           <select onChange={handleFilterChange} value={filterData}>
@@ -130,10 +130,9 @@ const MemoList = ({ itemEdit, setItemEdit, setItemView }) => {
               <th>#</th>
               <th>Status</th>
               <th>Date</th>
-              <th>From</th>
-              <th>To</th>
               <th>Category</th>
-              <th></th>
+              <th>Memo</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -170,9 +169,8 @@ const MemoList = ({ itemEdit, setItemEdit, setItemView }) => {
                         />
                       </td>
                       <td>{formatDate(item.memo_date, "--")}</td>
-                      <td>{item.memo_from}</td>
-                      <td>{item.memo_to}</td>
                       <td>{item.memo_category}</td>
+                      <td>{item.memo_text}</td>
                       <td>
                         <div className="flex items-center gap-3">
                           <button
