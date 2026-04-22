@@ -10,9 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-require __DIR__ . '/../../../../core/header.php';
-require __DIR__ . '/../../../../core/functions.php';
-require __DIR__ . '/../../../../models/developers/settings/memo/Memo.php';
+require __DIR__ . '/../../../core/header.php';
+require __DIR__ . '/../../../core/functions.php';
+require __DIR__ . '/../../../models/developers/memo/Memo.php';
 
 $body = file_get_contents("php://input");
 $data = json_decode($body, true);

@@ -1,4 +1,4 @@
-import { FaCogs, FaUser } from "react-icons/fa";
+import { FaCogs, FaStickyNote, FaUser } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { devNavUrl, urlDeveloper } from "../../functions/functions-general";
 
@@ -18,6 +18,13 @@ export const navList = [
     submenu: "",
   },
   {
+    label: "Memo",
+    icon: <FaStickyNote />,
+    menu: "memo",
+    path: `${devNavUrl}/${urlDeveloper}/memo`,
+    submenu: "",
+  },
+  {
     label: "SETTINGS",
     icon: <FaCogs />,
     menu: "settings",
@@ -30,10 +37,6 @@ export const navList = [
       {
         label: "users",
         path: `${devNavUrl}/${urlDeveloper}/settings/users`,
-      },
-      {
-        label: "Memo",
-        path: `${devNavUrl}/${urlDeveloper}/settings/memo`,
       },
     ],
   },

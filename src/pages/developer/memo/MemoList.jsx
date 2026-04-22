@@ -2,26 +2,26 @@ import React from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { FaArchive, FaEdit, FaEye, FaTrash, FaTrashRestore } from "react-icons/fa";
-import { apiVersion, formatDate } from "../../../../functions/functions-general";
-import { queryDataInfinite } from "../../../../functions/custom-hooks/queryDataInfinite";
-import NoData from "../../../../partials/NoData";
-import SearchBar from "../../../../partials/SearchBar";
-import ServerError from "../../../../partials/ServerError";
-import TableLoading from "../../../../partials/TableLoading";
-import FetchingSpinner from "../../../../partials/spinners/FetchingSpinner";
-import Loadmore from "../../../../partials/Loadmore";
-import Status from "../../../../partials/Status";
-import ModalArchive from "../../../../partials/modals/ModalArchive";
-import ModalDelete from "../../../../partials/modals/ModalDelete";
-import ModalRestore from "../../../../partials/modals/ModalRestore";
-import { StoreContext } from "../../../../store/StoreContext";
+import { apiVersion, formatDate } from "../../../functions/functions-general";
+import { queryDataInfinite } from "../../../functions/custom-hooks/queryDataInfinite";
+import NoData from "../../../partials/NoData";
+import SearchBar from "../../../partials/SearchBar";
+import ServerError from "../../../partials/ServerError";
+import TableLoading from "../../../partials/TableLoading";
+import FetchingSpinner from "../../../partials/spinners/FetchingSpinner";
+import Loadmore from "../../../partials/Loadmore";
+import Status from "../../../partials/Status";
+import ModalArchive from "../../../partials/modals/ModalArchive";
+import ModalDelete from "../../../partials/modals/ModalDelete";
+import ModalRestore from "../../../partials/modals/ModalRestore";
+import { StoreContext } from "../../../store/StoreContext";
 import {
   setIsArchive,
   setIsDelete,
   setIsMemoOpen,
   setIsRestore,
   setIsAdd,
-} from "../../../../store/StoreAction";
+} from "../../../store/StoreAction";
 
 const MemoList = ({ itemEdit, setItemEdit, setItemView }) => {
   const { store, dispatch } = React.useContext(StoreContext);
@@ -46,7 +46,7 @@ const MemoList = ({ itemEdit, setItemEdit, setItemView }) => {
     queryFn: async ({ pageParam = 1 }) =>
       await queryDataInfinite(
         ``,
-        `${apiVersion}/controllers/developers/settings/memo/page.php?start=${pageParam}`,
+        `${apiVersion}/controllers/developers/memo/page.php?start=${pageParam}`,
         false,
         {
           filterData,
@@ -249,7 +249,7 @@ const MemoList = ({ itemEdit, setItemEdit, setItemView }) => {
 
       {store.isArchive && (
         <ModalArchive
-          mysqlApiArchive={`${apiVersion}/controllers/developers/settings/memo/active.php?id=${itemEdit.memo_aid}`}
+          mysqlApiArchive={`${apiVersion}/controllers/developers/memo/active.php?id=${itemEdit.memo_aid}`}
           dataItem={itemEdit}
           msg="Are you sure you want to archive this record?"
           successMsg={"Successfully archived"}
@@ -260,7 +260,7 @@ const MemoList = ({ itemEdit, setItemEdit, setItemView }) => {
 
       {store.isRestore && (
         <ModalRestore
-          mysqlApiRestore={`${apiVersion}/controllers/developers/settings/memo/active.php?id=${itemEdit.memo_aid}`}
+          mysqlApiRestore={`${apiVersion}/controllers/developers/memo/active.php?id=${itemEdit.memo_aid}`}
           dataItem={itemEdit}
           msg="Are you sure you want to restore this record?"
           successMsg={"Successfully restored"}
@@ -271,7 +271,7 @@ const MemoList = ({ itemEdit, setItemEdit, setItemView }) => {
 
       {store.isDelete && (
         <ModalDelete
-          mysqlApiDelete={`${apiVersion}/controllers/developers/settings/memo/memo.php?id=${itemEdit.memo_aid}`}
+          mysqlApiDelete={`${apiVersion}/controllers/developers/memo/memo.php?id=${itemEdit.memo_aid}`}
           dataItem={itemEdit}
           msg="Are you sure you want to delete this record?"
           successMsg={"Successfully deleted"}

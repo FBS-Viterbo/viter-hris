@@ -1,12 +1,12 @@
 import React from "react";
-import { formatDate } from "../../../../functions/functions-general";
-import ModalWrapperCenter from "../../../../partials/modals/ModalWrapperCenter";
+import { formatDate } from "../../../functions/functions-general";
+import ModalWrapperCenter from "../../../partials/modals/ModalWrapperCenter";
 
 const ModalViewMemo = ({ itemView, handleClose }) => {
   return (
     <ModalWrapperCenter
       handleClose={handleClose}
-      className="w-[92vw] max-w-[52rem] rounded-md p-8"
+      className="w-150 rounded-md p-6"
       topNone="top-5"
     >
       <div className="flex flex-col gap-6 text-sm text-gray-700">
@@ -29,7 +29,7 @@ const ModalViewMemo = ({ itemView, handleClose }) => {
         </div>
 
         <div className="flex justify-end">
-          <button type="button" className="btn-modal-cancel" onClick={handleClose}>
+          <button type="button" className="btn-modal-cancel w-fit" onClick={handleClose}>
             Close
           </button>
         </div>

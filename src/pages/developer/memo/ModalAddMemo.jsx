@@ -6,19 +6,19 @@ import { FaTimes } from "react-icons/fa";
 import {
   InputText,
   InputTextArea,
-} from "../../../../components/form-input/FormInputs";
-import { queryData } from "../../../../functions/custom-hooks/queryData";
-import { apiVersion } from "../../../../functions/functions-general";
-import MessageError from "../../../../partials/MessageError";
-import ModalWrapperSide from "../../../../partials/modals/ModalWrapperSide";
-import ButtonSpinner from "../../../../partials/spinners/ButtonSpinner";
+} from "../../../components/form-input/FormInputs";
+import { queryData } from "../../../functions/custom-hooks/queryData";
+import { apiVersion } from "../../../functions/functions-general";
+import MessageError from "../../../partials/MessageError";
+import ModalWrapperSide from "../../../partials/modals/ModalWrapperSide";
+import ButtonSpinner from "../../../partials/spinners/ButtonSpinner";
 import {
   setError,
   setIsAdd,
   setMessage,
   setSuccess,
-} from "../../../../store/StoreAction";
-import { StoreContext } from "../../../../store/StoreContext";
+} from "../../../store/StoreAction";
+import { StoreContext } from "../../../store/StoreContext";
 
 const ModalAddMemo = ({ itemEdit }) => {
   const { store, dispatch } = React.useContext(StoreContext);
@@ -28,8 +28,8 @@ const ModalAddMemo = ({ itemEdit }) => {
     mutationFn: (values) =>
       queryData(
         itemEdit
-          ? `${apiVersion}/controllers/developers/settings/memo/memo.php?id=${itemEdit.memo_aid}`
-          : `${apiVersion}/controllers/developers/settings/memo/memo.php`,
+          ? `${apiVersion}/controllers/developers/memo/memo.php?id=${itemEdit.memo_aid}`
+          : `${apiVersion}/controllers/developers/memo/memo.php`,
         itemEdit ? "put" : "post",
         values,
       ),

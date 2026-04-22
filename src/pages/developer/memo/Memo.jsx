@@ -1,8 +1,8 @@
 import React from "react";
 import { FaPlus } from "react-icons/fa";
-import { setIsAdd, setIsMemoOpen } from "../../../../store/StoreAction";
-import { StoreContext } from "../../../../store/StoreContext";
-import Layout from "../../Layout";
+import { setIsAdd, setIsMemoOpen } from "../../../store/StoreAction";
+import { StoreContext } from "../../../store/StoreContext";
+import Layout from "../Layout";
 import MemoList from "./MemoList";
 import ModalAddMemo from "./ModalAddMemo";
 import ModalViewMemo from "./ModalViewMemo";
@@ -24,7 +24,7 @@ const Memo = () => {
 
   return (
     <>
-      <Layout menu="settings">
+      <Layout menu="memo">
         <div className="flex items-center justify-between w-full">
           <h1>Memo</h1>
           <div>
