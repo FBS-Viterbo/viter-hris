@@ -1,6 +1,6 @@
 import React from "react";
 
-export const urlPath = "http://localhost:8080/react-vite/viter-hris";
+export const urlPath = "http://localhost/react-vite/viter-hris";
 export const devApiUrl = urlPath + "/rest";
 export const devNavUrl = "";
 export const apiVersion = "/v1";
