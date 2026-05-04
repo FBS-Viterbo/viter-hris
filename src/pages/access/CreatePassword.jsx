@@ -34,14 +34,18 @@ const CreatePasswordOther = () => {
   const [lengthValidated, setLengthValidated] = React.useState(false);
 
   const { isLoading, data: key } = useQueryData(
-    `${apiVersion}/controllers/developers/settings/users/key.php?=${paramKey}`, // endpoint
+    `${apiVersion}/controllers/developers/settings/users/key.php?key=${paramKey}`, // endpoint
     "get", // endpoint
     "other-user-password", // key
   );
 
   const mutation = useMutation({
     mutationFn: (values) =>
-      queryData(`${apiVersion}/other-user/password`, "post", values),
+      queryData(
+        `${apiVersion}/controllers/developers/settings/users/set-password.php`,
+        "post",
+        values,
+      ),
     onSuccess: (data) => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["other-user-password"] });

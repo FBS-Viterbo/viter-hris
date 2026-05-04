@@ -9,7 +9,7 @@ require '../../../../models/developers/settings/users/Users.php';
 $conn = null;
 $conn = checkDbConnection();
 // models
-$val = new User($conn);
+$val = new Users($conn);
 $encrypt = new Encryption();
 // get payload
 $body = file_get_contents("php://input");

@@ -5,18 +5,19 @@ class Users
     public $users_aid;
     public $users_is_active;
     public $users_first_name;
-    public $users_email;
     public $users_last_name;
+    public $users_email;
     public $users_password;
+    public $users_key;
     public $users_role_id;
     public $users_created;
     public $users_updated;
 
-
-    public $connection;
     public $start;
     public $total;
     public $search;
+
+    public $connection;
     public $lastInsertedId;
 
     public $tblSettingsRoles;
@@ -25,10 +26,9 @@ class Users
     public function __construct($db)
     {
         $this->connection = $db;
-        $this->tblSettingsRoles = "settings_roles";
         $this->tblSettingsUsers = "settings_users";
+        $this->tblSettingsRoles = "settings_roles";
     }
-
     public function create()
     {
         try {
@@ -39,15 +39,17 @@ class Users
             $sql .= " users_last_name, ";
             $sql .= " users_email, ";
             $sql .= " users_password, ";
+            $sql .= " users_key, ";
             $sql .= " users_role_id, ";
             $sql .= " users_created, ";
             $sql .= " users_updated ";
-            $sql .= ") values (";
+            $sql .= " ) values ( ";
             $sql .= " :users_is_active, ";
             $sql .= " :users_first_name, ";
             $sql .= " :users_last_name, ";
             $sql .= " :users_email, ";
             $sql .= " :users_password, ";
+            $sql .= " :users_key, ";
             $sql .= " :users_role_id, ";
             $sql .= " :users_created, ";
             $sql .= " :users_updated ";
@@ -59,22 +61,24 @@ class Users
                 "users_last_name" => $this->users_last_name,
                 "users_email" => $this->users_email,
                 "users_password" => $this->users_password,
+                "users_key" => $this->users_key,
                 "users_role_id" => $this->users_role_id,
                 "users_created" => $this->users_created,
-                "users_updated" => $this->users_updated,
+                "users_updated" => $this->users_updated
             ]);
             $this->lastInsertedId = $this->connection->lastInsertId();
         } catch (PDOException $e) {
+            returnError($e);
             $query = false;
         }
         return $query;
     }
+
     public function readAll()
     {
         try {
-            // JOINING TABLE
             $sql = "select ";
-            $sql .= " * ";
+            $sql .= "* ";
             $sql .= " from {$this->tblSettingsUsers} as users, ";
             $sql .= " {$this->tblSettingsRoles} as roles ";
             $sql .= " where users.users_role_id = roles.role_aid ";
@@ -82,15 +86,15 @@ class Users
             $sql .= $this->users_is_active != '' ? " and users.users_is_active = :users_is_active " : " ";
             // SEARCH
             $sql .= $this->search != '' ? " and ( " : " ";
-            $sql .= $this->search != '' ? " users.users_first_name like :users_first_name  " : " ";
-            $sql .= $this->search != '' ? " or users.users_last_name like :users_last_name  " : " ";
-            $sql .= $this->search != '' ? " or users.users_email like :users_email  " : " ";
-            $sql .= $this->search != '' ? " or CONCAT(users.users_last_name,' ',users.users_first_name) like :users_last_fullname " : " ";
-            $sql .= $this->search != '' ? " or CONCAT(users.users_first_name,' ',users.users_last_name) like :users_first_fullname " : " ";
+            $sql .= $this->search != '' ? " users.users_first_name like :users_first_name " : " ";
+            $sql .= $this->search != '' ? " or users.users_last_name like :users_last_name " : " ";
+            $sql .= $this->search != '' ? " or users.users_email like :users_email " : " ";
+            $sql .= $this->search != '' ? " or CONCAT(users.users_last_name, ' ', users.users_first_name) like :users_last_fullname " : " ";
+            $sql .= $this->search != '' ? " or CONCAT(users.users_first_name, ' ', users.users_last_name) like :users_first_fullname " : " ";
             $sql .= $this->search != '' ? " ) " : " ";
             $query = $this->connection->prepare($sql);
             $query->execute([
-                // FOR FILTER 
+                //FOR FILTER
                 ...$this->users_is_active != '' ? ["users_is_active" => $this->users_is_active] : [],
                 // FOR SEARCHING
                 ...$this->search != '' ? [
@@ -101,7 +105,7 @@ class Users
                     "users_first_fullname" => "%{$this->search}%",
                 ] : [],
             ]);
-        } catch (PROException $e) {
+        } catch (PDOException $e) {
             $query = false;
         }
         return $query;
@@ -109,9 +113,8 @@ class Users
     public function readLimit()
     {
         try {
-            // JOINING TABLE
             $sql = "select ";
-            $sql .= " * ";
+            $sql .= "* ";
             $sql .= " from {$this->tblSettingsUsers} as users, ";
             $sql .= " {$this->tblSettingsRoles} as roles ";
             $sql .= " where users.users_role_id = roles.role_aid ";
@@ -119,18 +122,18 @@ class Users
             $sql .= $this->users_is_active != '' ? " and users.users_is_active = :users_is_active " : " ";
             // SEARCH
             $sql .= $this->search != '' ? " and ( " : " ";
-            $sql .= $this->search != '' ? " users.users_first_name like :users_first_name  " : " ";
-            $sql .= $this->search != '' ? " or users.users_last_name like :users_last_name  " : " ";
-            $sql .= $this->search != '' ? " or users.users_email like :users_email  " : " ";
-            $sql .= $this->search != '' ? " or CONCAT(users.users_last_name,' ',users.users_first_name) like :users_last_fullname " : " ";
-            $sql .= $this->search != '' ? " or CONCAT(users.users_first_name,' ',users.users_last_name) like :users_first_fullname " : " ";
+            $sql .= $this->search != '' ? " users.users_first_name like :users_first_name " : " ";
+            $sql .= $this->search != '' ? " or users.users_last_name like :users_last_name " : " ";
+            $sql .= $this->search != '' ? " or users.users_email like :users_email " : " ";
+            $sql .= $this->search != '' ? " or CONCAT(users.users_last_name, ' ', users.users_first_name) like :users_last_fullname " : " ";
+            $sql .= $this->search != '' ? " or CONCAT(users.users_first_name, ' ', users.users_last_name) like :users_first_fullname " : " ";
             $sql .= $this->search != '' ? " ) " : " ";
             // THIS IS FOR PAGINATION LIKE FACEBOOK SCROLLING
-            $sql .= "limit :start, ";
+            $sql .= " limit :start, ";
             $sql .= " :total ";
             $query = $this->connection->prepare($sql);
             $query->execute([
-                // FOR FILTER 
+                //FOR FILTER
                 ...$this->users_is_active != '' ? ["users_is_active" => $this->users_is_active] : [],
                 // FOR SEARCHING
                 ...$this->search != '' ? [
@@ -140,11 +143,11 @@ class Users
                     "users_last_fullname" => "%{$this->search}%",
                     "users_first_fullname" => "%{$this->search}%",
                 ] : [],
+                // THIS IS FOR PAGINATION LIKE FACEBOOK SCROLLING
                 "start" => $this->start - 1,
                 "total" => $this->total,
-
             ]);
-        } catch (PROException $e) {
+        } catch (PDOException $e) {
             $query = false;
         }
         return $query;
@@ -153,61 +156,61 @@ class Users
     public function update()
     {
         try {
-            $sql = " update {$this->tblSettingsUsers} set ";
-            $sql .= " users_first_name = :users_first_name, ";
-            $sql .= " users_last_name = :users_last_name, ";
-            $sql .= " users_email = :users_email, ";
-            $sql .= " users_role_id = :users_role_id, ";
-            $sql .= " users_updated = :users_updated ";
-            $sql .= " where users_aid = :users_aid ";
+            $sql = "update {$this->tblSettingsUsers} set ";
+            $sql .= "users_first_name = :users_first_name, ";
+            $sql .= "users_last_name = :users_last_name, ";
+            $sql .= "users_email = :users_email, ";
+            $sql .= "users_password = :users_password, ";
+            $sql .= "users_role_id = :users_role_id, ";
+            $sql .= "users_updated = :users_updated ";
+            $sql .= "where users_aid = :users_aid ";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "users_first_name" => $this->users_first_name,
                 "users_last_name" => $this->users_last_name,
                 "users_email" => $this->users_email,
+                "users_password" => $this->users_password,
                 "users_role_id" => $this->users_role_id,
                 "users_updated" => $this->users_updated,
-                "users_aid" => $this->users_aid,
+                "users_aid" => $this->users_aid
             ]);
         } catch (PDOException $e) {
-            // returnError($e); turn on when debugging
+            returnError($e);
             $query = false;
         }
         return $query;
     }
-
     public function setPassword()
     {
         try {
-            $sql = " update {$this->tblSettingsUsers} set ";
-            $sql .= " users_key = '', ";
-            $sql .= " users_password = :users_password, ";
-            $sql .= " users_updated = :users_updated, ";
-            $sql .= " where users_key = :users_key ";
+            $sql = "update {$this->tblSettingsUsers} set ";
+            $sql .= "users_key = '', ";
+            $sql .= "users_password = :users_password, ";
+            $sql .= "users_updated = :users_updated ";
+            $sql .= "where users_key = :users_key ";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "users_password" => $this->users_password,
                 "users_updated" => $this->users_updated,
-                "users_key" => $this->users_key,
+                "users_key" => $this->users_key
             ]);
         } catch (PDOException $e) {
-            // returnError($e); turn on when debugging
+            returnError($e);
             $query = false;
         }
         return $query;
     }
-
     public function readKey()
     {
         try {
-            $sql = " select * from {$this->tblSettingsUsers} ";
-            $sql .= " where users_key = :users_key ";
+            $sql = "select * from {$this->tblSettingsUsers} ";
+            $sql .= "where users_key = :users_key ";
             $query = $this->connection->prepare($sql);
             $query->execute([
-                "users_key" => $this->users_key,
+                "users_key" => $this->users_key
             ]);
         } catch (PDOException $e) {
-            // returnError($e); turn on when debugging
+            returnError($e);
             $query = false;
         }
         return $query;
@@ -216,85 +219,56 @@ class Users
     public function active()
     {
         try {
-            $sql = " update {$this->tblSettingsUsers} set ";
-            $sql .= " users_is_active = :users_is_active, ";
-            $sql .= " users_updated = :users_updated ";
-            $sql .= " where users_aid = :users_aid ";
+            $sql = "update {$this->tblSettingsUsers} set ";
+            $sql .= "users_is_active = :users_is_active, ";
+            $sql .= "users_updated = :users_updated ";
+            $sql .= "where users_aid = :users_aid ";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "users_is_active" => $this->users_is_active,
                 "users_updated" => $this->users_updated,
-                "users_aid" => $this->users_aid,
+                "users_aid" => $this->users_aid
             ]);
         } catch (PDOException $e) {
-            // returnError($e); //turn on whe debugging
+            // returnError($e); // use for debugging // use it if error is invalid_request_error
             $query = false;
         }
         return $query;
     }
+
     public function delete()
     {
         try {
-            $sql = " delete from {$this->tblSettingsUsers} ";
-            $sql .= " where users_aid = :users_aid ";
+            $sql = "delete from {$this->tblSettingsUsers} ";
+            $sql .= "where users_aid = :users_aid ";
             $query = $this->connection->prepare($sql);
             $query->execute([
-                "users_aid" => $this->users_aid,
+                "users_aid" => $this->users_aid
             ]);
         } catch (PDOException $e) {
-            // returnError($e); //turn on whe debugging
+            // returnError($e); // use for debugging // use it if error is invalid_request_error
             $query = false;
         }
         return $query;
     }
+
     public function checkName()
     {
         try {
             $sql = "select ";
-            $sql .= " users_first_name ";
-            $sql .= " from {$this->tblSettingsUsers} ";
-            $sql .= " where users_first_name = :users_first_name ";
-            $query = $this->connection->prepare($sql);
-            $query->execute([
-                "users_first_name" => $this->users_first_name,
-            ]);
-        } catch (PROException $e) {
-            $query = false;
-        }
-        return $query;
-    }
-
-    public function checkEmail()
-    {
-        try {
-            $sql = "select ";
-            $sql .= " users_email ";
-            $sql .= " from {$this->tblSettingsUsers} ";
-            $sql .= " where users_email = :users_email ";
-            $query = $this->connection->prepare($sql);
-            $query->execute([
-                "users_email" => $this->users_email,
-            ]);
-        } catch (PDOException $e) {
-            $query = false;
-        }
-        return $query;
-    }
-
-    public function checkNameCombination()
-    {
-        try {
-            $sql = "select ";
-            $sql .= " * ";
-            $sql .= " from {$this->tblSettingsUsers} ";
-            $sql .= " where users_first_name = :users_first_name ";
-            $sql .= " and users_last_name = :users_last_name ";
+            $sql .= "users_first_name ";
+            $sql .= "from {$this->tblSettingsUsers} ";
+            $sql .= "where users_first_name = :users_first_name ";
+            $sql .= "or users_last_name = :users_last_name ";
+            $sql .= "or users_email = :users_email ";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "users_first_name" => $this->users_first_name,
                 "users_last_name" => $this->users_last_name,
+                "users_email" => $this->users_email
             ]);
         } catch (PDOException $e) {
+            returnError($e);
             $query = false;
         }
         return $query;
