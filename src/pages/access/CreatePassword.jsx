@@ -34,8 +34,8 @@ const CreatePasswordOther = () => {
   const [lengthValidated, setLengthValidated] = React.useState(false);
 
   const { isLoading, data: key } = useQueryData(
-    `${apiVersion}/other-user/key/${paramKey}`, // endpoint
-    "get", // method
+    `${apiVersion}/controllers/developers/settings/users/key.php?=${paramKey}`, // endpoint
+    "get", // endpoint
     "other-user-password", // key
   );
 

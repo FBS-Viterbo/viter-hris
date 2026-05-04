@@ -175,6 +175,44 @@ class Users
         }
         return $query;
     }
+
+    public function setPassword()
+    {
+        try {
+            $sql = " update {$this->tblSettingsUsers} set ";
+            $sql .= " users_key = '', ";
+            $sql .= " users_password = :users_password, ";
+            $sql .= " users_updated = :users_updated, ";
+            $sql .= " where users_key = :users_key ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "users_password" => $this->users_password,
+                "users_updated" => $this->users_updated,
+                "users_key" => $this->users_key,
+            ]);
+        } catch (PDOException $e) {
+            // returnError($e); turn on when debugging
+            $query = false;
+        }
+        return $query;
+    }
+
+    public function readKey()
+    {
+        try {
+            $sql = " select * from {$this->tblSettingsUsers} ";
+            $sql .= " where users_key = :users_key ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "users_key" => $this->users_key,
+            ]);
+        } catch (PDOException $e) {
+            // returnError($e); turn on when debugging
+            $query = false;
+        }
+        return $query;
+    }
+
     public function active()
     {
         try {
