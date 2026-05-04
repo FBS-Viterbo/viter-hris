@@ -38,9 +38,12 @@ const ModalArchive = ({
         dispatch(setMessage(data.error));
       }
     },
+    onError: (error) => {
+      dispatch(setError(true));
+      dispatch(setMessage(error.message || "Unable to archive record."));
+    },
   });
 
-  // 🔥 FIXED: dynamic correct field mapping
   const handleYes = () => {
     const primaryKey = Object.keys(dataItem).find((key) =>
       key.endsWith("_aid")
@@ -50,15 +53,17 @@ const ModalArchive = ({
       key.endsWith("_is_active")
     );
 
-    // safety check (prevents silent failure)
     if (!primaryKey || !activeKey) {
       console.error("Missing required keys in dataItem:", dataItem);
+      dispatch(setError(true));
+      dispatch(setMessage("Unable to archive record."));
       return;
     }
 
     mutation.mutate({
       [primaryKey]: dataItem[primaryKey],
-      [activeKey]: 0, // 🔥 THIS is the real fix
+      [activeKey]: 0,
+      isActive: 0,
     });
   };
 
@@ -81,9 +86,7 @@ const ModalArchive = ({
 
             <p className="text-sm">{msg}</p>
 
-            <p className="text-sm font-bold">
-              {isEmptyItem(item?.name, "")}
-            </p>
+            <p className="text-sm font-bold">{isEmptyItem(item, "")}</p>
 
             {store.error && <MessageError />}
 
