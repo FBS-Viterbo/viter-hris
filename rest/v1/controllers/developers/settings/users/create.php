@@ -27,6 +27,10 @@ isNameExist($val, $val->users_first_name);
 // CREATE
 
 $emailSendCount = 0;
+$sendEmail = [
+    "mail_success" => false,
+    "error" => "Email was not attempted.",
+];
 $query = checkCreate($val);
 if ($query->rowCount() > 0) {
     $sendEmail = sendEmail(
@@ -39,4 +43,4 @@ if ($query->rowCount() > 0) {
         $emailSendCount++;
 }
 http_response_code(200);
-returnSuccess($val, "Users Create", $query);
+returnSuccess($val, "Users Create", $query, $sendEmail);
