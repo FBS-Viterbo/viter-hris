@@ -31,6 +31,7 @@ CREATE TABLE `settings_roles` (
   `role_aid` int(11) NOT NULL,
   `role_is_active` tinyint(1) NOT NULL,
   `role_name` varchar(128) NOT NULL,
+  `role_code` varchar(128) NOT NULL,
   `role_description` text NOT NULL,
   `role_created` datetime NOT NULL,
   `role_updated` datetime NOT NULL

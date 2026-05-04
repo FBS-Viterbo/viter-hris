@@ -4,6 +4,7 @@ class Roles
     public $role_aid;
     public $role_is_active;
     public $role_name;
+    public $role_code;
     public $role_description;
     public $role_created;
     public $role_updated;
@@ -25,12 +26,14 @@ class Roles
             $sql .= "(";
             $sql .= " role_is_active, ";
             $sql .= " role_name, ";
+            $sql .= " role_code, ";
             $sql .= " role_description, ";
             $sql .= " role_created, ";
             $sql .= " role_updated ";
             $sql .= ") values ( ";
             $sql .= " :role_is_active, ";
             $sql .= " :role_name, ";
+            $sql .= " :role_code, ";
             $sql .= " :role_description, ";
             $sql .= " :role_created, ";
             $sql .= " :role_updated ";
@@ -40,6 +43,7 @@ class Roles
             $query->execute([
                 "role_is_active" => $this->role_is_active,
                 "role_name" => $this->role_name,
+                "role_code" => $this->role_code,
                 "role_description" => $this->role_description,
                 "role_created" => $this->role_created,
                 "role_updated" => $this->role_updated,
@@ -71,12 +75,14 @@ class Roles
         try {
             $sql = "update {$this->tblSettingsRoles} set ";
             $sql .= "role_name = :role_name, ";
+            $sql .= "role_code = :role_code, ";
             $sql .= "role_description = :role_description, ";
             $sql .= "role_updated = :role_updated ";
             $sql .= "where role_aid = :role_aid ";
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "role_name" => $this->role_name,
+                "role_code" => $this->role_code,
                 "role_description" => $this->role_description,
                 "role_updated" => $this->role_updated,
                 "role_aid" => $this->role_aid

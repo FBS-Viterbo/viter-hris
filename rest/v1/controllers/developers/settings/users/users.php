@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 require '../../../../core/header.php';
+require '../../../../core/Encryption.php';
 require '../../../../core/functions.php';
 require '../../../../models/developers/settings/users/Users.php';
 

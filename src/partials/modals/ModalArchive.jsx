@@ -18,7 +18,7 @@ const ModalArchive = ({
   msg,
   successMsg,
   item,
-  dataItem = [],
+  dataItem = {},
   queryKey,
 }) => {
   const { store, dispatch } = React.useContext(StoreContext);
@@ -27,26 +27,38 @@ const ModalArchive = ({
   const mutation = useMutation({
     mutationFn: (values) => queryData(mysqlApiArchive, "put", values),
     onSuccess: (data) => {
-      // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: [queryKey] });
 
       if (data.success) {
         dispatch(setIsArchive(false));
         dispatch(setSuccess(true));
         dispatch(setMessage(successMsg));
-      }
-      if (!data.success) {
+      } else {
         dispatch(setError(true));
         dispatch(setMessage(data.error));
       }
     },
   });
 
-  const handleYes = async () => {
-    // mutate data
+  // 🔥 FIXED: dynamic correct field mapping
+  const handleYes = () => {
+    const primaryKey = Object.keys(dataItem).find((key) =>
+      key.endsWith("_aid")
+    );
+
+    const activeKey = Object.keys(dataItem).find((key) =>
+      key.endsWith("_is_active")
+    );
+
+    // safety check (prevents silent failure)
+    if (!primaryKey || !activeKey) {
+      console.error("Missing required keys in dataItem:", dataItem);
+      return;
+    }
+
     mutation.mutate({
-      ...dataItem,
-      isActive: 0,
+      [primaryKey]: dataItem[primaryKey],
+      [activeKey]: 0, // 🔥 THIS is the real fix
     });
   };
 
@@ -62,24 +74,31 @@ const ModalArchive = ({
 
   return (
     <>
-      <div className="bg-dark/50 overflow-y-auto overflow-x-hidden fixed top-0 right-0 bottom-0 left-0 z-99 flex justify-center items-center w-full md:inset-0 max-h-full animate-fadeIn">
+      <div className="bg-dark/50 overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center animate-fadeIn">
         <div className="p-1 w-[350px] animate-slideUp">
           <div className="bg-white p-6 pt-10 text-center rounded-lg">
             <FaQuestion className="my-2 mx-auto animate-bounce h-11 w-11 text-red-700" />
+
             <p className="text-sm">{msg}</p>
-            <p className="text-sm font-bold">{isEmptyItem(item?.name, "")}</p>
+
+            <p className="text-sm font-bold">
+              {isEmptyItem(item?.name, "")}
+            </p>
+
             {store.error && <MessageError />}
+
             <div className="flex items-center gap-1 pt-8">
               <button
-                type="submit"
+                type="button"
                 className="btn-modal-submit"
                 disabled={mutation.isPending}
                 onClick={handleYes}
               >
                 {mutation.isPending ? <ButtonSpinner /> : "Confirm"}
               </button>
+
               <button
-                type="reset"
+                type="button"
                 className="btn-modal-cancel"
                 disabled={mutation.isPending}
                 onClick={handleClose}

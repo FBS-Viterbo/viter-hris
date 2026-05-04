@@ -20,6 +20,7 @@ $val = new Roles($conn);
 if (array_key_exists("id", $_GET)) {
     $val->role_aid = $_GET["id"];
     $val->role_name = $data['role_name'];
+    $val->role_code = "r_is_{$val->role_name}";
     $val->role_description = $data['role_description'];
     $val->role_updated = date("Y-m-d H:m:s");
 

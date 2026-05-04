@@ -35,6 +35,7 @@ CREATE TABLE `settings_users` (
   `users_email` varchar(255) NOT NULL,
   `users_role_id` varchar(20) NOT NULL,
   `users_password` varchar(255) NOT NULL,
+  `users_key` varchar(255) NOT NULL,
   `users_created` datetime NOT NULL,
   `users_updated` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

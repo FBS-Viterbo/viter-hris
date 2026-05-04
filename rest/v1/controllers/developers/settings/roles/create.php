@@ -7,6 +7,7 @@ $val = new Roles($conn);
 
 $val->role_is_active = 1;
 $val->role_name = trim($data['role_name']);
+$val->role_code = "r_is_{$val->role_name}";
 $val->role_description = $data['role_description'];
 $val->role_created = date("Y-m-d H:m:s");
 $val->role_updated = date("Y-m-d H:m:s");
