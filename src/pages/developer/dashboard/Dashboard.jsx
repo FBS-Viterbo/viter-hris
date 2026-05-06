@@ -1,152 +1,102 @@
 import React from "react";
+import { FaBell, FaBullhorn, FaBuilding, FaCalendarAlt, FaUsers } from "react-icons/fa";
 import Layout from "../Layout";
-
-// ── Static mock data ──────────────────────────────────────────────────────────
+import useQueryData from "../../../functions/custom-hooks/useQueryData";
+import { apiVersion } from "../../../functions/functions-general";
 
 const whoIsOut = {
   today: [
-    { name: "Bosinos, Maribel", type: "Maternity Leave", days: 74, avatar: null },
-    { name: "Consignado, Thea Lyzette", type: "Vacation Leave", days: 1, avatar: null },
+    { name: "Bosinos, Maribel", type: "Maternity Leave", days: 74 },
+    { name: "Consignado, Thea Lyzette", type: "Vacation Leave", days: 1 },
   ],
   tomorrow: [
-    { name: "Bosinos, Maribel", type: "Maternity Leave", days: 74, avatar: null },
+    { name: "Bosinos, Maribel", type: "Maternity Leave", days: 74 },
   ],
 };
 
-const announcements = [
-  {
-    id: 1,
-    memoNo: "Memo No. 0929, Series 2025: MANDATORY WEARING OF COMPANY IDs",
-    date: "September 29, 2025",
-    body: [
-      "This is a reminder that all employees of Frontline Business Solutions, Inc. are required to wear their company identification cards (IDs) at all times while inside the building.",
-      "Since we are sharing the same building with Frontline Christian Academy, it is important to maintain proper identification for security, order, and professionalism. Wearing your ID will help distinguish our employees from students, parents, and visitors, and will ensure smoother coordination within the premises.",
-      "We kindly ask everyone to comply with this policy at all times. Let us continue to uphold the values of professionalism and responsibility as representatives of Frontline Business Solutions.",
-    ],
-  },
-  {
-    id: 2,
-    memoNo: "Memo No. 0825, Series 2025: LAUNCH OF CLIENT REFERRAL INCENTIVE PROGRAM",
-    date: "August 4, 2025",
-    body: [
-      "Memo No. 0825, Series 2025\nTO: ALL EMPLOYEES\nRE: LAUNCH OF CLIENT REFERRAL INCENTIVE PROGRAM",
-      "To further grow our client base and expand the reach of our service offerings, we are pleased to launch the Client Referral Incentive Program. This program provides monetary incentives to employees, partners, or external contacts who successfully refer a local client that closes a deal with Frontline Business Solutions in any of the following services:",
-      "1. Website Development\n2. Web Applications Subscriptions\n3. Customized Web App Development\n4. Web and Graphic Design\n5. Business Registration\n6. Bookkeeping & Business Compliance",
-      "Please note that this incentive applies to all employees, except those whose primary role or job function is to acquire clients (e.g., sales, marketing, or business development roles).",
-      "The incentive amount will depend on the size and scope of the closed deal and may range from ₱500 to ₱1,000, as determined by the management, marketing team, and project lead.",
-      "Thank you for your continued support in helping us expand our network and client base.",
-    ],
-  },
-];
-
 const myTeam = [
-  { name: "Balacalda Jr., Teodoro", dept: "Web", avatar: null },
-  { name: "Lumabas, Cyrene", dept: "Web", avatar: null },
-  { name: "Manalo, Emmanuel", dept: "Web", avatar: null },
-  { name: "Ramos, Jinuel Zymon", dept: "Web", avatar: null },
-  { name: "Rubico, Lauren Isabel", dept: "Web", avatar: null },
+  { name: "Balacalda Jr., Teodoro", dept: "Web" },
+  { name: "Lumabas, Cyrene", dept: "Web" },
+  { name: "Manalo, Emmanuel", dept: "Web" },
+  { name: "Ramos, Jinuel Zymon", dept: "Web" },
+  { name: "Rubico, Lauren Isabel", dept: "Web" },
 ];
 
-// ── Avatar placeholder ────────────────────────────────────────────────────────
-const Avatar = ({ name, size = 40 }) => {
+const bgColors = [
+  "bg-pink-700",
+  "bg-purple-700",
+  "bg-blue-700",
+  "bg-teal-700",
+  "bg-orange-600",
+  "bg-stone-600",
+  "bg-slate-600",
+];
+
+const dateOptions = { month: "long", day: "numeric", year: "numeric" };
+
+const formatMemoCreated = (memo) => {
+  const dates = [memo?.memo_created, memo?.memo_date];
+
+  for (const date of dates) {
+    if (!date || date.startsWith("0000")) continue;
+
+    const parsedDate = new Date(date.replace(" ", "T"));
+    if (!Number.isNaN(parsedDate.getTime())) {
+      return parsedDate.toLocaleString("en", dateOptions);
+    }
+  }
+
+  return "--";
+};
+
+const Avatar = ({ name, size = "w-10 h-10", textSize = "text-sm" }) => {
   const initials = name
     .split(",")
     .map((s) => s.trim()[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const colors = [
-    "#C2185B","#7B1FA2","#1976D2","#00796B","#F57C00","#5D4037","#455A64",
-  ];
-  const color = colors[name.charCodeAt(0) % colors.length];
+  const colorClass = bgColors[name.charCodeAt(0) % bgColors.length];
+
   return (
     <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        background: color,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "#fff",
-        fontWeight: 700,
-        fontSize: size * 0.38,
-        flexShrink: 0,
-      }}
+      className={`${size} ${colorClass} ${textSize} rounded-full flex items-center justify-center text-white font-bold shrink-0`}
     >
       {initials}
     </div>
   );
 };
 
-// ── Section card wrapper ──────────────────────────────────────────────────────
-const Card = ({ children, style }) => (
-  <div
-    style={{
-      background: "#fff",
-      border: "1px solid #e5e7eb",
-      borderRadius: 8,
-      overflow: "hidden",
-      ...style,
-    }}
-  >
+const Card = ({ children, className = "" }) => (
+  <div className={`bg-white border border-gray-200 rounded-lg overflow-hidden ${className}`}>
     {children}
   </div>
 );
 
-const CardHeader = ({ icon, title, color = "#C2185B" }) => (
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: 8,
-      padding: "10px 16px",
-      borderBottom: "1px solid #e5e7eb",
-      background: "#fafafa",
-    }}
-  >
-    <span style={{ color, fontSize: 15 }}>{icon}</span>
-    <span style={{ fontWeight: 700, fontSize: 14, color: "#111" }}>{title}</span>
+const CardHeader = ({ icon, title }) => (
+  <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-200 bg-gray-50">
+    <span className="text-base">{icon}</span>
+    <span className="font-bold text-sm text-gray-900">{title}</span>
   </div>
 );
 
-// ── Who's Out ─────────────────────────────────────────────────────────────────
 const WhosOut = () => (
   <Card>
-    <CardHeader icon="📅" title="Who's Out" />
-    <div style={{ padding: "12px 16px" }}>
+    <CardHeader icon={<FaCalendarAlt />} title="Who's Out" />
+    <div className="px-4 py-3">
       {[
         { label: "TODAY", people: whoIsOut.today },
         { label: "TOMORROW", people: whoIsOut.tomorrow },
       ].map(({ label, people }) => (
-        <div key={label} style={{ marginBottom: 16 }}>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              color: "#6b7280",
-              letterSpacing: "0.07em",
-              marginBottom: 8,
-            }}
-          >
-            {label}
-          </div>
+        <div key={label} className="mb-4">
+          <p className="text-[11px] font-bold text-gray-500 tracking-wider mb-2">{label}</p>
           {people.map((p, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                marginBottom: 12,
-              }}
-            >
-              <Avatar name={p.name} size={40} />
+            <div key={i} className="flex items-center gap-2.5 mb-3">
+              <Avatar name={p.name} />
               <div>
-                <div style={{ fontWeight: 600, fontSize: 13, color: "#111" }}>{p.name}</div>
-                <div style={{ fontSize: 12, color: "#6b7280" }}>{p.type}</div>
-                <div style={{ fontSize: 11, color: "#9ca3af" }}>Day(s): {p.days}</div>
+                <p className="font-semibold text-[13px] text-gray-900">{p.name}</p>
+                <p className="text-[12px] text-gray-500">{p.type}</p>
+                <p className="text-[11px] text-gray-400">Day(s): {p.days}</p>
               </div>
             </div>
           ))}
@@ -156,106 +106,107 @@ const WhosOut = () => (
   </Card>
 );
 
-// ── Celebrations ──────────────────────────────────────────────────────────────
 const Celebrations = () => (
   <Card>
-    <CardHeader icon="🎉" title="Celebrations" color="#f59e0b" />
-    <div
-      style={{
-        padding: "24px 16px",
-        textAlign: "center",
-        color: "#6b7280",
-        fontSize: 13,
-        lineHeight: 1.7,
-      }}
-    >
-      <div style={{ fontSize: 36, marginBottom: 10 }}>🎊</div>
-      No celebration for today. However, we would like to express our sincere
-      appreciation and gratitude for all the hard work of all employees. You are the
-      backbone of our company and we value your contributions immensely. Thank you for
-      your understanding and cooperation.
+    <CardHeader icon={<FaBell />} title="Celebrations" />
+    <div className="px-4 py-6 text-center text-gray-500 text-[13px] leading-relaxed">
+      <div className="text-4xl mb-2.5">*</div>
+      No celebration for today. However, we would like to express our sincere appreciation
+      and gratitude for all the hard work of all employees. You are the backbone of our
+      company and we value your contributions immensely. Thank you for your understanding
+      and cooperation.
     </div>
   </Card>
 );
 
-// ── Welcome New Employees ─────────────────────────────────────────────────────
 const WelcomeNew = () => (
   <Card>
-    <CardHeader icon="🏢" title="Welcome to Frontline Business Solutions Inc." />
-    <div
-      style={{
-        padding: "24px 16px",
-        textAlign: "center",
-        color: "#9ca3af",
-        fontSize: 13,
-      }}
-    >
+    <CardHeader icon={<FaBuilding />} title="Welcome to Frontline Business Solutions Inc." />
+    <div className="px-4 py-6 text-center text-gray-400 text-[13px]">
       No new employee yet.
     </div>
   </Card>
 );
 
-// ── Announcements ─────────────────────────────────────────────────────────────
-const Announcements = () => (
-  <Card style={{ height: "100%" }}>
-    <CardHeader icon="📢" title="Announcement" />
-    <div style={{ padding: "16px 20px", maxHeight: 480, overflowY: "auto" }}>
-      <p style={{ fontSize: 13, color: "#374151", marginBottom: 4 }}>
-        Thank you for your continued support and participation!
-      </p>
-      <p style={{ fontSize: 12, color: "#6b7280", marginBottom: 20 }}>— FBS Management</p>
+const Announcements = () => {
+  const { data: result, error, isFetching, status } = useQueryData(
+    `${apiVersion}/controllers/developers/memo/memo.php`,
+    "get",
+    "dashboard-announcements",
+  );
 
-      {announcements.map((a) => (
-        <div key={a.id} style={{ marginBottom: 28 }}>
-          <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-            <span style={{ fontSize: 18, marginTop: 2 }}>📢</span>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 13, color: "#111", marginBottom: 2 }}>
-                {a.memoNo}
+  const announcements = result?.data?.filter((memo) => memo.memo_is_active == 1) || [];
+
+  return (
+    <Card>
+      <CardHeader icon={<FaBullhorn />} title="Announcement" />
+      <div className="px-5 py-4 max-h-[480px] overflow-y-auto">
+        <p className="text-[13px] text-gray-700 mb-1">
+          Thank you for your continued support and participation!
+        </p>
+        <p className="text-[12px] text-gray-500 mb-5">- FBS Management</p>
+
+        {status === "pending" && (
+          <p className="text-[13px] text-gray-500">Loading announcements...</p>
+        )}
+
+        {error && (
+          <p className="text-[13px] text-red-600">Unable to load announcements.</p>
+        )}
+
+        {!error && status !== "pending" && announcements.length === 0 && (
+          <p className="text-[13px] text-gray-500">No announcement yet.</p>
+        )}
+
+        {!error &&
+          announcements.map((memo) => (
+            <div key={memo.memo_aid} className="mb-7">
+              <div className="flex gap-3 items-start">
+                <span className="text-lg mt-0.5 text-pink-700">
+                  <FaBullhorn />
+                </span>
+                <div>
+                  <p className="font-bold text-[13px] text-gray-900 mb-0.5">
+                    Memo No. {memo.memo_no}: {memo.memo_name}
+                  </p>
+                  <p className="text-[12px] text-pink-700 mb-2.5">
+                    <strong>Date:</strong> {formatMemoCreated(memo)}
+                  </p>
+                  <div className="text-[13px] text-gray-700 mb-2 whitespace-pre-line leading-relaxed">
+                    <p>
+                      Memo No. {memo.memo_no}
+                    </p>
+                    <p>
+                      <strong>TO:</strong> {memo.memo_to}
+                    </p>
+                    <p className="mb-2">
+                      <strong>RE:</strong> {memo.memo_name}
+                    </p>
+                    <p>{memo.memo_text}</p>
+                  </div>
+                </div>
               </div>
-              <div style={{ fontSize: 12, color: "#C2185B", marginBottom: 10 }}>
-                <strong>Date:</strong> {a.date}
-              </div>
-              {a.body.map((para, i) => (
-                <p
-                  key={i}
-                  style={{
-                    fontSize: 13,
-                    color: "#374151",
-                    marginBottom: 8,
-                    whiteSpace: "pre-line",
-                    lineHeight: 1.65,
-                  }}
-                >
-                  {para}
-                </p>
-              ))}
             </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </Card>
-);
+          ))}
 
-// ── My Team ───────────────────────────────────────────────────────────────────
+        {!error && status !== "pending" && isFetching && (
+          <p className="text-[12px] text-gray-400">Refreshing announcements...</p>
+        )}
+      </div>
+    </Card>
+  );
+};
+
 const MyTeam = () => (
   <Card>
-    <CardHeader icon="👥" title="My Team" color="#1976D2" />
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gap: 16,
-        padding: 16,
-      }}
-    >
+    <CardHeader icon={<FaUsers />} title="My Team" />
+    <div className="grid grid-cols-3 gap-4 p-4">
       {myTeam.map((m, i) => (
-        <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Avatar name={m.name} size={44} />
+        <div key={i} className="flex items-center gap-2.5">
+          <Avatar name={m.name} size="w-11 h-11" textSize="text-sm" />
           <div>
-            <div style={{ fontWeight: 600, fontSize: 13, color: "#111" }}>{m.name}</div>
-            <div style={{ fontSize: 12, color: "#6b7280" }}>{m.dept}</div>
+            <p className="font-semibold text-[13px] text-gray-900">{m.name}</p>
+            <p className="text-[12px] text-gray-500">{m.dept}</p>
           </div>
         </div>
       ))}
@@ -263,35 +214,23 @@ const MyTeam = () => (
   </Card>
 );
 
-// ── Main Dashboard ────────────────────────────────────────────────────────────
 const Dashboard = () => {
   return (
     <Layout menu="dashboard">
-      {/* Page Header */}
-      <div style={{ marginBottom: 20 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111" }}>
+      <div className="mb-5">
+        <h1 className="text-[22px] font-bold text-gray-900">
           Welcome Manalo, Emmanuel!
         </h1>
       </div>
 
-      {/* Two-column layout */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "300px 1fr",
-          gap: 16,
-          alignItems: "start",
-        }}
-      >
-        {/* LEFT COLUMN */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="grid grid-cols-[300px_1fr] gap-4 items-start">
+        <div className="flex flex-col gap-4">
           <WhosOut />
           <Celebrations />
           <WelcomeNew />
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="flex flex-col gap-4">
           <Announcements />
           <MyTeam />
         </div>
