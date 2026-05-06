@@ -3,6 +3,8 @@
 class Memo
 {
     public $memo_aid;
+    public $memo_no; // ✅ added
+    public $memo_name;
     public $memo_is_active;
     public $memo_from;
     public $memo_to;
@@ -30,8 +32,9 @@ class Memo
     public function create()
     {
         try {
-            $sql = "insert into {$this->tblMemo} ";
-            $sql .= "( ";
+            $sql = "insert into {$this->tblMemo} ( ";
+            $sql .= "memo_no, "; // ✅ added
+            $sql .= "memo_name, ";
             $sql .= "memo_is_active, ";
             $sql .= "memo_from, ";
             $sql .= "memo_to, ";
@@ -41,6 +44,8 @@ class Memo
             $sql .= "memo_created, ";
             $sql .= "memo_updated ";
             $sql .= ") values (";
+            $sql .= ":memo_no, "; // ✅ added
+            $sql .= ":memo_name, ";
             $sql .= ":memo_is_active, ";
             $sql .= ":memo_from, ";
             $sql .= ":memo_to, ";
@@ -50,8 +55,11 @@ class Memo
             $sql .= ":memo_created, ";
             $sql .= ":memo_updated ";
             $sql .= ")";
+
             $query = $this->connection->prepare($sql);
             $query->execute([
+                "memo_no" => $this->memo_no, // ✅ added
+                "memo_name" => $this->memo_name,
                 "memo_is_active" => $this->memo_is_active,
                 "memo_from" => $this->memo_from,
                 "memo_to" => $this->memo_to,
@@ -61,6 +69,7 @@ class Memo
                 "memo_created" => $this->memo_created,
                 "memo_updated" => $this->memo_updated,
             ]);
+
             $this->lastInsertedId = $this->connection->lastInsertId();
         } catch (PDOException $e) {
             $query = false;
@@ -73,6 +82,8 @@ class Memo
         try {
             $sql = "select ";
             $sql .= "memo_aid, ";
+            $sql .= "memo_no, "; // ✅ added
+            $sql .= "memo_name, ";
             $sql .= "memo_is_active, ";
             $sql .= "memo_from, ";
             $sql .= "memo_to, ";
@@ -83,15 +94,22 @@ class Memo
             $sql .= "memo_updated ";
             $sql .= "from {$this->tblMemo} ";
             $sql .= "where true ";
-            $sql .= $this->memo_is_active !== null && $this->memo_is_active !== "" ? " and memo_is_active = :memo_is_active " : " ";
+
+            $sql .= $this->memo_is_active !== null && $this->memo_is_active !== ""
+                ? " and memo_is_active = :memo_is_active " : " ";
+
             $sql .= $this->search != "" ? " and ( " : " ";
-            $sql .= $this->search != "" ? "memo_from like :memo_from " : " ";
+            $sql .= $this->search != "" ? "memo_no like :memo_no " : " "; // ✅ added
+            $sql .= $this->search != "" ? "or memo_name like :memo_name " : " ";
+            $sql .= $this->search != "" ? "or memo_from like :memo_from " : " ";
             $sql .= $this->search != "" ? "or memo_to like :memo_to " : " ";
             $sql .= $this->search != "" ? "or memo_date like :memo_date " : " ";
             $sql .= $this->search != "" ? "or memo_category like :memo_category " : " ";
             $sql .= $this->search != "" ? "or memo_text like :memo_text " : " ";
             $sql .= $this->search != "" ? ")" : " ";
+
             $sql .= "order by memo_aid desc ";
+
             $query = $this->connection->prepare($sql);
 
             if ($this->memo_is_active !== null && $this->memo_is_active !== "") {
@@ -100,6 +118,8 @@ class Memo
 
             if ($this->search != "") {
                 $search = "%{$this->search}%";
+                $query->bindValue(":memo_no", $search); // ✅ added
+                $query->bindValue(":memo_name", $search);
                 $query->bindValue(":memo_from", $search);
                 $query->bindValue(":memo_to", $search);
                 $query->bindValue(":memo_date", $search);
@@ -119,6 +139,8 @@ class Memo
         try {
             $sql = "select ";
             $sql .= "memo_aid, ";
+            $sql .= "memo_no, "; // ✅ added
+            $sql .= "memo_name, ";
             $sql .= "memo_is_active, ";
             $sql .= "memo_from, ";
             $sql .= "memo_to, ";
@@ -129,19 +151,27 @@ class Memo
             $sql .= "memo_updated ";
             $sql .= "from {$this->tblMemo} ";
             $sql .= "where true ";
-            $sql .= $this->memo_is_active !== null && $this->memo_is_active !== "" ? " and memo_is_active = :memo_is_active " : " ";
+
+            $sql .= $this->memo_is_active !== null && $this->memo_is_active !== ""
+                ? " and memo_is_active = :memo_is_active " : " ";
+
             $sql .= $this->search != "" ? " and ( " : " ";
-            $sql .= $this->search != "" ? "memo_from like :memo_from " : " ";
+            $sql .= $this->search != "" ? "memo_no like :memo_no " : " "; // ✅ added
+            $sql .= $this->search != "" ? "or memo_name like :memo_name " : " ";
+            $sql .= $this->search != "" ? "or memo_from like :memo_from " : " ";
             $sql .= $this->search != "" ? "or memo_to like :memo_to " : " ";
             $sql .= $this->search != "" ? "or memo_date like :memo_date " : " ";
             $sql .= $this->search != "" ? "or memo_category like :memo_category " : " ";
             $sql .= $this->search != "" ? "or memo_text like :memo_text " : " ";
             $sql .= $this->search != "" ? ")" : " ";
+
             $sql .= "order by memo_aid desc ";
             $sql .= "limit :start, :total ";
+
             $query = $this->connection->prepare($sql);
-            $query->bindValue(":start", (int) $this->start - 1, PDO::PARAM_INT);
-            $query->bindValue(":total", (int) $this->total, PDO::PARAM_INT);
+
+            $query->bindValue(":start", (int)$this->start - 1, PDO::PARAM_INT);
+            $query->bindValue(":total", (int)$this->total, PDO::PARAM_INT);
 
             if ($this->memo_is_active !== null && $this->memo_is_active !== "") {
                 $query->bindValue(":memo_is_active", $this->memo_is_active);
@@ -149,6 +179,8 @@ class Memo
 
             if ($this->search != "") {
                 $search = "%{$this->search}%";
+                $query->bindValue(":memo_no", $search); // ✅ added
+                $query->bindValue(":memo_name", $search);
                 $query->bindValue(":memo_from", $search);
                 $query->bindValue(":memo_to", $search);
                 $query->bindValue(":memo_date", $search);
@@ -167,6 +199,8 @@ class Memo
     {
         try {
             $sql = "update {$this->tblMemo} set ";
+            $sql .= "memo_no = :memo_no, "; // ✅ added
+            $sql .= "memo_name = :memo_name, ";
             $sql .= "memo_from = :memo_from, ";
             $sql .= "memo_to = :memo_to, ";
             $sql .= "memo_date = :memo_date, ";
@@ -174,8 +208,11 @@ class Memo
             $sql .= "memo_text = :memo_text, ";
             $sql .= "memo_updated = :memo_updated ";
             $sql .= "where memo_aid = :memo_aid ";
+
             $query = $this->connection->prepare($sql);
             $query->execute([
+                "memo_no" => $this->memo_no, // ✅ added
+                "memo_name" => $this->memo_name,
                 "memo_from" => $this->memo_from,
                 "memo_to" => $this->memo_to,
                 "memo_date" => $this->memo_date,
@@ -197,6 +234,7 @@ class Memo
             $sql .= "memo_is_active = :memo_is_active, ";
             $sql .= "memo_updated = :memo_updated ";
             $sql .= "where memo_aid = :memo_aid ";
+
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "memo_is_active" => $this->memo_is_active,
@@ -214,6 +252,7 @@ class Memo
         try {
             $sql = "delete from {$this->tblMemo} ";
             $sql .= "where memo_aid = :memo_aid ";
+
             $query = $this->connection->prepare($sql);
             $query->execute([
                 "memo_aid" => $this->memo_aid,

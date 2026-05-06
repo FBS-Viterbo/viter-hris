@@ -170,7 +170,7 @@ const MemoList = ({ itemEdit, setItemEdit, setItemView }) => {
                       </td>
                       <td>{formatDate(item.memo_date, "--")}</td>
                       <td>{item.memo_category}</td>
-                      <td>{item.memo_text}</td>
+                      <td>{item.memo_name}</td>
                       <td>
                         <div className="flex items-center gap-3">
                           <button

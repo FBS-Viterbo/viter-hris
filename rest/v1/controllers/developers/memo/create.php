@@ -4,6 +4,8 @@ $conn = null;
 $conn = checkDbConnection();
 $val = new Memo($conn);
 
+$val->memo_no = trim($data['memo_no']); // ✅ added
+$val->memo_name = trim($data['memo_name']);
 $val->memo_is_active = 1;
 $val->memo_from = trim($data['memo_from']);
 $val->memo_to = trim($data['memo_to']);

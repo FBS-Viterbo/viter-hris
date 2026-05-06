@@ -51,6 +51,8 @@ const ModalAddMemo = ({ itemEdit }) => {
 
   const initVal = {
     ...itemEdit,
+    memo_no: itemEdit ? itemEdit.memo_no : "", // ✅ added
+    memo_name: itemEdit ? itemEdit.memo_name : "",
     memo_from: itemEdit ? itemEdit.memo_from : "",
     memo_to: itemEdit ? itemEdit.memo_to : "",
     memo_date: itemEdit ? itemEdit.memo_date : "",
@@ -59,6 +61,8 @@ const ModalAddMemo = ({ itemEdit }) => {
   };
 
   const yupSchema = Yup.object({
+    memo_no: Yup.string().trim().required("required"), // ✅ added
+    memo_name: Yup.string().trim().required("required"),
     memo_from: Yup.string().trim().required("required"),
     memo_to: Yup.string().trim().required("required"),
     memo_date: Yup.string().trim().required("required"),
@@ -104,6 +108,27 @@ const ModalAddMemo = ({ itemEdit }) => {
               <Form className="h-full">
                 <div className="modal-form-container">
                   <div className="modal-container">
+
+                    {/* ✅ MEMO NO */}
+                    <div className="relative mb-6">
+                      <InputText
+                        label="Memo No"
+                        name="memo_no"
+                        type="text"
+                        disabled={mutation.isPending}
+                      />
+                    </div>
+
+                    {/* MEMO NAME */}
+                    <div className="relative mb-6">
+                      <InputText
+                        label="Memo"
+                        name="memo_name"
+                        type="text"
+                        disabled={mutation.isPending}
+                      />
+                    </div>
+
                     <div className="relative mb-6">
                       <InputText
                         label="From"
@@ -151,6 +176,7 @@ const ModalAddMemo = ({ itemEdit }) => {
                       {store.error && <MessageError />}
                     </div>
                   </div>
+
                   <div className="modal-action">
                     <button
                       type="submit"
@@ -165,6 +191,7 @@ const ModalAddMemo = ({ itemEdit }) => {
                         "Add"
                       )}
                     </button>
+
                     <button
                       type="reset"
                       className="btn-modal-cancel"

@@ -16,6 +16,9 @@ $val = new Memo($conn);
 
 if (array_key_exists("id", $_GET)) {
     $val->memo_aid = $_GET["id"];
+
+    $val->memo_no = trim($data['memo_no']); // ✅ added
+    $val->memo_name = trim($data['memo_name']); // ✅ added
     $val->memo_from = trim($data['memo_from']);
     $val->memo_to = trim($data['memo_to']);
     $val->memo_date = trim($data['memo_date']);
