@@ -50,33 +50,52 @@ const ModalAddDirectReport = ({ employees, directReports }) => {
     },
   });
 
+  // ✅ FIXED VALIDATION
   const yupSchema = Yup.object({
-    direct_report_subordinate_id: Yup.string().trim().required("required"),
+    direct_report_subordinate_id: Yup.string()
+      .trim()
+      .required("required"),
+
     direct_report_supervisor_id: Yup.string()
       .trim()
       .required("required")
+
+      // ❌ same person validation
       .test(
         "different-employee",
         "The subordinate and supervisor cannot be the same person.",
         function (value) {
-          return value !== this.parent.direct_report_subordinate_id;
-        },
+          const subordinateId = this.parent.direct_report_subordinate_id;
+          if (!value || !subordinateId) return true;
+
+          return String(value) !== String(subordinateId);
+        }
       )
+
+      // ❌ duplicate + reverse relationship validation
       .test(
-        "reverse-assignment",
+        "invalid-relationship",
         "Invalid request, the supervisor cannot be assigned to the selected subordinate.",
         function (value) {
           const subordinateId = this.parent.direct_report_subordinate_id;
 
           if (!value || !subordinateId) return true;
 
-          return !directReports.some(
-            (item) =>
-              String(item.direct_report_subordinate_id) === String(value) &&
-              String(item.direct_report_supervisor_id) ===
-                String(subordinateId),
-          );
-        },
+          const selectedSub = String(subordinateId);
+          const selectedSup = String(value);
+
+          const hasConflict = directReports.some((item) => {
+            const sub = String(item.direct_report_subordinate_id);
+            const sup = String(item.direct_report_supervisor_id);
+
+            const normal = sub === selectedSub && sup === selectedSup;
+            const reverse = sub === selectedSup && sup === selectedSub;
+
+            return normal || reverse;
+          });
+
+          return !hasConflict;
+        }
       ),
   });
 
@@ -89,10 +108,7 @@ const ModalAddDirectReport = ({ employees, directReports }) => {
   }, [dispatch]);
 
   return (
-    <ModalWrapperSide
-      handleClose={handleClose}
-      className="transition-all ease-in-out transform duration-200"
-    >
+    <ModalWrapperSide handleClose={handleClose}>
       <div className="modal-header relative mb-4">
         <h3 className="text-dark text-sm">Add Direct Report</h3>
         <button
@@ -104,91 +120,83 @@ const ModalAddDirectReport = ({ employees, directReports }) => {
         </button>
       </div>
 
-      <div className="modal-body">
-        <Formik
-          initialValues={{
-            direct_report_subordinate_id: "",
-            direct_report_supervisor_id: "",
-          }}
-          validationSchema={yupSchema}
-          onSubmit={(values) => {
-            dispatch(setError(false));
-            mutation.mutate(values);
-          }}
-        >
-          {(props) => (
-            <Form className="h-full">
-              <div className="modal-form-container">
-                <div className="modal-container">
-                  <div className="relative mb-6">
-                    <InputSelect
-                      label="Subordinate"
-                      name="direct_report_subordinate_id"
-                      disabled={mutation.isPending}
-                    >
-                      <option value="" hidden>
-                        --
-                      </option>
-                      {employees.map((item) => (
-                        <option key={item.employee_aid} value={item.employee_aid}>
-                          {getEmployeeName(item)}
-                        </option>
-                      ))}
-                    </InputSelect>
-                  </div>
+      <Formik
+        initialValues={{
+          direct_report_subordinate_id: "",
+          direct_report_supervisor_id: "",
+        }}
+        validationSchema={yupSchema}
+        onSubmit={(values) => {
+          dispatch(setError(false));
+          mutation.mutate(values);
+        }}
+      >
+        {(props) => (
+          <Form className="h-full">
+            <div className="modal-form-container">
+              <div className="modal-container">
 
-                  <div className="relative mb-6">
-                    <InputSelect
-                      label="Supervisor"
-                      name="direct_report_supervisor_id"
-                      disabled={mutation.isPending}
-                    >
-                      <option value="" hidden>
-                        --
-                      </option>
-                      {employees
-                        .filter(
-                          (item) =>
-                            String(item.employee_aid) !==
-                            String(props.values.direct_report_subordinate_id),
-                        )
-                        .map((item) => (
-                          <option
-                            key={item.employee_aid}
-                            value={item.employee_aid}
-                          >
-                            {getEmployeeName(item)}
-                          </option>
-                        ))}
-                    </InputSelect>
-
-                    {store.error && <MessageError />}
-                  </div>
-                </div>
-
-                <div className="modal-action">
-                  <button
-                    type="submit"
-                    disabled={mutation.isPending || !props.dirty}
-                    className="btn-modal-submit"
-                  >
-                    {mutation.isPending ? <ButtonSpinner /> : "Add"}
-                  </button>
-
-                  <button
-                    type="reset"
-                    className="btn-modal-cancel"
-                    onClick={handleClose}
+                {/* SUBORDINATE */}
+                <div className="relative mb-6">
+                  <InputSelect
+                    label="Subordinate"
+                    name="direct_report_subordinate_id"
                     disabled={mutation.isPending}
                   >
-                    Cancel
-                  </button>
+                    <option value="" hidden>
+                      --
+                    </option>
+                    {employees.map((item) => (
+                      <option key={item.employee_aid} value={item.employee_aid}>
+                        {getEmployeeName(item)}
+                      </option>
+                    ))}
+                  </InputSelect>
+                </div>
+
+                {/* SUPERVISOR */}
+                <div className="relative mb-6">
+                  <InputSelect
+                    label="Supervisor"
+                    name="direct_report_supervisor_id"
+                    disabled={mutation.isPending}
+                  >
+                    <option value="" hidden>
+                      --
+                    </option>
+                    {employees.map((item) => (
+                      <option key={item.employee_aid} value={item.employee_aid}>
+                        {getEmployeeName(item)}
+                      </option>
+                    ))}
+                  </InputSelect>
+
+                  {store.error && <MessageError />}
                 </div>
               </div>
-            </Form>
-          )}
-        </Formik>
-      </div>
+
+              <div className="modal-action">
+                <button
+                  type="submit"
+                  disabled={mutation.isPending || !props.dirty}
+                  className="btn-modal-submit"
+                >
+                  {mutation.isPending ? <ButtonSpinner /> : "Add"}
+                </button>
+
+                <button
+                  type="reset"
+                  className="btn-modal-cancel"
+                  onClick={handleClose}
+                  disabled={mutation.isPending}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </ModalWrapperSide>
   );
 };
@@ -213,39 +221,24 @@ const DirectReport = () => {
   const activeEmployees =
     employeeResult?.data?.filter((item) => item.employee_is_active == 1) || [];
 
-  const handleAdd = () => {
-    dispatch(setIsAdd(true));
-  };
-
   return (
     <>
       <Layout menu="Settings" submenu="direct-report">
         <div className="flex items-center justify-between w-full">
           <h1>Direct Report</h1>
-          <div>
-            {employeeStatus === "pending" ? (
-              <ButtonSpinner />
-            ) : (
-              <button
-                type="button"
-                className="flex items-center gap-1 hover:underline"
-                onClick={handleAdd}
-                disabled={activeEmployees.length < 2}
-              >
-                <FaPlus className="text-primary" />
-                Add
-              </button>
-            )}
-          </div>
+
+          <button
+            type="button"
+            className="flex items-center gap-1 hover:underline"
+            onClick={() => dispatch(setIsAdd(true))}
+            disabled={activeEmployees.length < 2}
+          >
+            <FaPlus className="text-primary" />
+            Add
+          </button>
         </div>
 
         <div className="py-5 flex items-center gap-4">
-          <div className="relative">
-            <label htmlFor="">Status</label>
-            <select disabled>
-              <option>All</option>
-            </select>
-          </div>
           <div className="flex items-center gap-1 text-sm">
             <FaUsers />
             {directReports.length}
@@ -253,9 +246,8 @@ const DirectReport = () => {
         </div>
 
         <div className="relative">
-          {directReportFetching && directReportStatus !== "pending" && (
-            <ContentSpinner />
-          )}
+          {directReportFetching && <ContentSpinner />}
+
           <table>
             <thead>
               <tr>
@@ -266,6 +258,7 @@ const DirectReport = () => {
                 <th>Supervisor Email</th>
               </tr>
             </thead>
+
             <tbody>
               {(directReportStatus === "pending" ||
                 employeeStatus === "pending") && (
@@ -284,9 +277,8 @@ const DirectReport = () => {
                 </tr>
               )}
 
-              {!directReportError &&
-                directReportStatus !== "pending" &&
-                directReports.length === 0 && (
+              {directReports.length === 0 &&
+                directReportStatus !== "pending" && (
                   <tr>
                     <td colSpan="100%" className="p-10">
                       <NoData />
@@ -296,7 +288,7 @@ const DirectReport = () => {
 
               {directReports.map((item, key) => (
                 <tr key={item.direct_report_aid}>
-                  <td>{key + 1}.</td>
+                  <td>{key + 1}</td>
                   <td>
                     <Status
                       text={
