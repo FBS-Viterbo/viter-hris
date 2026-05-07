@@ -3,6 +3,7 @@ import Dashboard from "../pages/developer/dashboard/Dashboard";
 import Employees from "../pages/developer/employees/Employees";
 import Memo from "../pages/developer/memo/Memo";
 import Departments from "../pages/developer/settings/departments/Departments";
+import DirectReport from "../pages/developer/settings/directreport/DirectReport";
 import Notifications from "../pages/developer/settings/notifications/Notifications";
 import Roles from "../pages/developer/settings/roles/Roles";
 import Users from "../pages/developer/settings/users/Users";
@@ -61,6 +62,14 @@ export const routesDeveloper = [
     element: (
       <>
         <Notifications />
+      </>
+    ),
+  },
+  {
+    path: `${devNavUrl}/${urlDeveloper}/settings/direct-report`,
+    element: (
+      <>
+        <DirectReport />
       </>
     ),
   },

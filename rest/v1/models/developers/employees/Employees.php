@@ -8,6 +8,10 @@ class Employees
     public $employee_middle_name;
     public $employee_last_name;
     public $employee_email;
+    public $employee_supervisor_id;
+    public $employee_supervisor_first_name;
+    public $employee_supervisor_last_name;
+    public $employee_supervisor_email;
     public $employee_department_id;
     public $employee_birthday;
     public $employee_start_work_date; // ✅ ADDED
@@ -29,6 +33,35 @@ class Employees
         $this->connection = $db;
         $this->tblEmployees = "employees";
         $this->tblSettingsDepartment = "settings_department";
+        $this->ensureSupervisorColumns();
+    }
+
+    private function ensureSupervisorColumns()
+    {
+        $columns = [
+            "employee_supervisor_id" => "varchar(20) NOT NULL DEFAULT ''",
+            "employee_supervisor_first_name" => "varchar(128) NOT NULL DEFAULT ''",
+            "employee_supervisor_last_name" => "varchar(128) NOT NULL DEFAULT ''",
+            "employee_supervisor_email" => "varchar(255) NOT NULL DEFAULT ''",
+        ];
+
+        foreach ($columns as $column => $definition) {
+            try {
+                $check = $this->connection->prepare(
+                    "select column_name from information_schema.columns where table_schema = database() and table_name = :table_name and column_name = :column_name"
+                );
+                $check->execute([
+                    "table_name" => $this->tblEmployees,
+                    "column_name" => $column,
+                ]);
+
+                if ($check->rowCount() === 0) {
+                    $this->connection->exec("alter table {$this->tblEmployees} add {$column} {$definition}");
+                }
+            } catch (PDOException $e) {
+                returnError($e->getMessage());
+            }
+        }
     }
 
     // CREATE
@@ -92,6 +125,10 @@ class Employees
             $sql .= "employee_middle_name, ";
             $sql .= "employee_last_name, ";
             $sql .= "employee_email, ";
+            $sql .= "employee_supervisor_id, ";
+            $sql .= "employee_supervisor_first_name, ";
+            $sql .= "employee_supervisor_last_name, ";
+            $sql .= "employee_supervisor_email, ";
             $sql .= "employee_department_id, ";
             $sql .= "employee_birthday, ";
             $sql .= "employee_start_work_date, "; // ✅ ADDED
@@ -150,6 +187,10 @@ class Employees
             $sql .= "employee_middle_name, ";
             $sql .= "employee_last_name, ";
             $sql .= "employee_email, ";
+            $sql .= "employee_supervisor_id, ";
+            $sql .= "employee_supervisor_first_name, ";
+            $sql .= "employee_supervisor_last_name, ";
+            $sql .= "employee_supervisor_email, ";
             $sql .= "employee_department_id, ";
             $sql .= "employee_birthday, ";
             $sql .= "employee_start_work_date, "; // ✅ ADDED

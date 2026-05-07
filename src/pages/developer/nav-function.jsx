@@ -35,12 +35,16 @@ export const navList = [
         path: `${devNavUrl}/${urlDeveloper}/settings/users/roles`,
       },
       {
-        label: "users",
+        label: "Users",
         path: `${devNavUrl}/${urlDeveloper}/settings/users`,
       },
       {
         label: "Departments",
         path: `${devNavUrl}/${urlDeveloper}/settings/departments`,
+      },
+      {
+        label: "Direct Report",
+        path: `${devNavUrl}/${urlDeveloper}/settings/direct-report`,
       },
       {
         label: "Notification",
